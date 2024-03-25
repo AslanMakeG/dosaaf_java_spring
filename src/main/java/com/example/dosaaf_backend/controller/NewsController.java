@@ -16,7 +16,8 @@ public class NewsController {
     @PostMapping
     public ResponseEntity createNews(@RequestBody NewsEntity news){
         try{
-            return ResponseEntity.ok("Сервер работает");
+            newsRepo.save(news);
+            return ResponseEntity.ok("Новость была успешно создана");
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
