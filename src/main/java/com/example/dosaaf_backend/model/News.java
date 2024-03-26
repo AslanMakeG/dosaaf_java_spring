@@ -1,28 +1,26 @@
-package com.example.dosaaf_backend.entity;
+package com.example.dosaaf_backend.model;
 
+import com.example.dosaaf_backend.entity.NewsEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 
-@Entity
-public class NewsEntity {
-    @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+public class News {
     private Long id;
     private String title;
     private String content;
-    private String albumLink;
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date creationDateTime;
-    private boolean inArchive;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
-    private List<NewsPicEntity> pictures;
+    public static News toModel(NewsEntity entity){
+        News model = new News();
+        model.setId(entity.getId());
+        model.setTitle(entity.getTitle());
+        model.setContent(entity.getContent());
+        model.setCreationDateTime(entity.getCreationDateTime());
+        return model;
+    }
 
-    public NewsEntity(){
-
+    public News(){
     }
 
     public Long getId() {
@@ -49,27 +47,11 @@ public class NewsEntity {
         this.content = content;
     }
 
-    public String getAlbumLink() {
-        return albumLink;
-    }
-
-    public void setAlbumLink(String albumLink) {
-        this.albumLink = albumLink;
-    }
-
     public Date getCreationDateTime() {
         return creationDateTime;
     }
 
     public void setCreationDateTime(Date creationDateTime) {
         this.creationDateTime = creationDateTime;
-    }
-
-    public boolean isInArchive() {
-        return inArchive;
-    }
-
-    public void setInArchive(boolean inArchive) {
-        this.inArchive = inArchive;
     }
 }

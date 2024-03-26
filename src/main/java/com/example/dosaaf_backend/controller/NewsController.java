@@ -1,7 +1,9 @@
 package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.entity.NewsEntity;
+import com.example.dosaaf_backend.exception.NewsNotFoundException;
 import com.example.dosaaf_backend.repository.NewsRepo;
+import com.example.dosaaf_backend.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,23 +13,36 @@ import org.springframework.web.bind.annotation.*;
 public class NewsController {
 
     @Autowired
-    private NewsRepo newsRepo;
+    private NewsService newsService;
 
     @PostMapping
     public ResponseEntity createNews(@RequestBody NewsEntity news){
         try{
-            newsRepo.save(news);
+            newsService.create(news);
             return ResponseEntity.ok("Новость была успешно создана");
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity getOneNews(@RequestParam Long id){
+        try{
+            return ResponseEntity.ok(newsService.getOne(id));
+        }
+        catch (NewsNotFoundException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
         }
     }
 
-    @GetMapping
-    public ResponseEntity getNews(){
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteNews(@PathVariable Long id){
         try{
-            return ResponseEntity.ok("Сервер работает");
+            return ResponseEntity.ok(newsService.deleteNews(id));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
