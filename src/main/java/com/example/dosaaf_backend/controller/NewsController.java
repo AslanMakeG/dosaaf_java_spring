@@ -48,4 +48,14 @@ public class NewsController {
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
         }
     }
+
+    @PutMapping("/archive")
+    public ResponseEntity inOrOutArchive(@RequestParam Long id){
+        try{
+            return ResponseEntity.ok(newsService.archive(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
 }

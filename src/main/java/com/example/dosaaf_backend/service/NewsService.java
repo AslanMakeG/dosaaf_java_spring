@@ -45,4 +45,10 @@ public class NewsService {
         newsRepo.deleteById(id);
         return id;
     }
+
+    public NewsEntity archive(Long id){
+        NewsEntity news = newsRepo.findById(id).get();
+        news.setInArchive(!news.isInArchive());
+        return newsRepo.save(news);
+    }
 }

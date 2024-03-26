@@ -26,7 +26,7 @@ public class NewsPicService {
         NewsPicEntity picture = newsPicRepo.findById(id).get();
         List<NewsPicEntity> pictures = newsPicRepo.findByNewsId(picture.getNews().getId());
         for(NewsPicEntity i: pictures){
-            i.setMainPicture(i.getId() == id);
+            i.setMainPicture(i.getId() == id); //установка true/false в поле главной картинки
         }
         return pictures;
     }
