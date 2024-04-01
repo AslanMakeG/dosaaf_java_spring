@@ -11,11 +11,16 @@ public class NewsEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
+    @Column
     private String title;
+    @Column
     private String content;
+    @Column
     private String albumLink;
+    @Column
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date creationDateTime;
+    @Column
     private boolean inArchive;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "news")

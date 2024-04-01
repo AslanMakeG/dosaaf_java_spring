@@ -7,7 +7,9 @@ public class NewsPicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
     private String pictureLink;
+    @Column
     private boolean mainPicture;
 
     @ManyToOne

@@ -6,6 +6,7 @@ import com.example.dosaaf_backend.repository.NewsRepo;
 import com.example.dosaaf_backend.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,6 +34,17 @@ public class NewsController {
         }
         catch (NewsNotFoundException e){
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @GetMapping("/all")
+    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getAllNews(){
+        try{
+            return ResponseEntity.ok(newsService.getAll());
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
