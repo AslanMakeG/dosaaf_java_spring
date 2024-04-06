@@ -21,7 +21,7 @@ public class NewsService {
     @Autowired
     private NewsPicService newsPicService;
 
-    public NewsEntity create(NewsEntity news){
+    public News create(NewsEntity news){
         NewsEntity newsCreated = newsRepo.save(news);
 
         //условно создаем по 3 картинки для новости
@@ -31,7 +31,7 @@ public class NewsService {
             picture.setMainPicture(i == 0);
             newsPicService.create(picture, newsCreated.getId());
         }
-        return newsCreated;
+        return News.toModel(newsCreated);
     }
 
     public News getOne(Long id) throws NewsNotFoundException {

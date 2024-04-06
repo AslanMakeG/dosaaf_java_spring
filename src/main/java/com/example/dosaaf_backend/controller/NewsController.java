@@ -20,8 +20,7 @@ public class NewsController {
     //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity createNews(@RequestBody NewsEntity news){
         try{
-            newsService.create(news);
-            return ResponseEntity.ok("Новость была успешно создана");
+            return ResponseEntity.ok(newsService.create(news));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
