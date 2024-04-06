@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class NewsEntity {
@@ -16,12 +17,12 @@ public class NewsEntity {
     @Column
     private String content;
     @Column
-    private String albumLink;
+    private String albumLink = null;
     @Column
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date creationDateTime;
+    private Date creationDateTime = new Date();
     @Column
-    private boolean inArchive;
+    private boolean inArchive = false;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
     private List<NewsPicEntity> pictures;
@@ -76,5 +77,17 @@ public class NewsEntity {
 
     public void setInArchive(boolean inArchive) {
         this.inArchive = inArchive;
+    }
+
+    public List<NewsPicEntity> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<NewsPicEntity> pictures) {
+        this.pictures = pictures;
+    }
+
+    public NewsPicEntity getMainPicture(){
+        return pictures.stream().filter(picture -> picture.isMainPicture()).findAny().orElse(null);
     }
 }

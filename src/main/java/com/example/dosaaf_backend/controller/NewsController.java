@@ -17,6 +17,7 @@ public class NewsController {
     private NewsService newsService;
 
     @PostMapping
+    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity createNews(@RequestBody NewsEntity news){
         try{
             newsService.create(news);
@@ -27,8 +28,9 @@ public class NewsController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity getOneNews(@RequestParam Long id){
+    //Получить одну новость для просмотра
+    @GetMapping("/{id}")
+    public ResponseEntity getOneNews(@PathVariable Long id){
         try{
             return ResponseEntity.ok(newsService.getOne(id));
         }
@@ -40,8 +42,8 @@ public class NewsController {
         }
     }
 
+    //Получить все новости для страницы новостей
     @GetMapping("/all")
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity getAllNews(){
         try{
             return ResponseEntity.ok(newsService.getAll());

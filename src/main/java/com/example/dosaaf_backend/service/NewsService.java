@@ -4,10 +4,12 @@ import com.example.dosaaf_backend.entity.NewsEntity;
 import com.example.dosaaf_backend.entity.NewsPicEntity;
 import com.example.dosaaf_backend.exception.NewsNotFoundException;
 import com.example.dosaaf_backend.model.News;
+import com.example.dosaaf_backend.model.NewsPic;
 import com.example.dosaaf_backend.repository.NewsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,8 +45,25 @@ public class NewsService {
     }
 
 
-    public List<NewsEntity> getAll() {
-        return (List<NewsEntity>) newsRepo.findAll();
+    public List<News> getAll() {
+        List<News> newsList = new ArrayList<>();
+        newsRepo.findAll().forEach(news ->{
+            News model = new News();
+            model.setId(news.getId());
+            model.setTitle(news.getTitle());
+            model.setContent(news.getContent());
+            model.setCreationDateTime(news.getCreationDateTime());
+            model.setInArchive(news.isInArchive());
+
+            List<NewsPic> newsPics = new ArrayList<>();
+            newsPics.add(NewsPic.toModel(news.getMainPicture()));
+
+            model.setPictures(newsPics);
+
+            newsList.add(model);
+        });
+
+        return newsList;
     }
 
     public Long deleteNews(Long id){
