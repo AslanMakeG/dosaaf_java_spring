@@ -71,9 +71,25 @@ public class NewsService {
         return id;
     }
 
-    public NewsEntity archive(Long id){
+    public News archive(Long id){
         NewsEntity news = newsRepo.findById(id).get();
         news.setInArchive(!news.isInArchive());
-        return newsRepo.save(news);
+        newsRepo.save(news);
+        return News.toModel(news);
+    }
+
+    public News update(NewsEntity newsEntity){
+        NewsEntity news = newsRepo.findById(newsEntity.getId()).get();
+        //Отправлено null, чтобы не менять фотографии новости
+        //Иначе поменять фотографии на другие
+        if(newsEntity.getPictures() != null){
+            news.setPictures(newsEntity.getPictures());
+        }
+        news.setContent(newsEntity.getContent());
+        news.setTitle(newsEntity.getTitle());
+        //!!! Тут сделать обновление ссылки на альбом и обновление всех фотографий с нее !!!
+        news.setAlbumLink(newsEntity.getAlbumLink());
+        newsRepo.save(news);
+        return News.toModel(news);
     }
 }
