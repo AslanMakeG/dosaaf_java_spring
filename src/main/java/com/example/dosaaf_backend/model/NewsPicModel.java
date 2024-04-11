@@ -2,12 +2,12 @@ package com.example.dosaaf_backend.model;
 
 import com.example.dosaaf_backend.entity.NewsPicEntity;
 
-public class NewsPic {
+public class NewsPicModel {
     private Long id;
     private String pictureLink;
 
-    public static NewsPic toModel(NewsPicEntity newsPicture){
-        NewsPic newPic = new NewsPic();
+    public static NewsPicModel toModel(NewsPicEntity newsPicture){
+        NewsPicModel newPic = new NewsPicModel();
         newPic.setId(newsPicture.getId());
         newPic.setPictureLink(newsPicture.getPictureLink());
         return newPic;

@@ -1,39 +1,37 @@
 package com.example.dosaaf_backend.model;
 
 import com.example.dosaaf_backend.entity.NewsEntity;
-import com.example.dosaaf_backend.entity.NewsPicEntity;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class News {
+public class NewsModel {
     private Long id;
     private String title;
     private String content;
     private Date creationDateTime;
     private boolean inArchive;
 
-    private List<NewsPic> pictures;
+    private List<NewsPicModel> pictures;
 
-    public static News toModel(NewsEntity entity){
-        News model = new News();
+    public static NewsModel toModel(NewsEntity entity){
+        NewsModel model = new NewsModel();
         model.setId(entity.getId());
         model.setTitle(entity.getTitle());
         model.setContent(entity.getContent());
         model.setCreationDateTime(entity.getCreationDateTime());
 
-        List<NewsPic> newsPics = new ArrayList<>();
+        List<NewsPicModel> newsPicModels = new ArrayList<>();
         entity.getPictures().forEach(newsPicEntity -> {
-            newsPics.add(NewsPic.toModel(newsPicEntity));
+            newsPicModels.add(NewsPicModel.toModel(newsPicEntity));
         });
 
-        model.setPictures(newsPics);
+        model.setPictures(newsPicModels);
         return model;
     }
 
-    public News(){
+    public NewsModel(){
     }
 
     public Long getId() {
@@ -68,11 +66,11 @@ public class News {
         this.creationDateTime = creationDateTime;
     }
 
-    public List<NewsPic> getPictures() {
+    public List<NewsPicModel> getPictures() {
         return pictures;
     }
 
-    public void setPictures(List<NewsPic> pictures) {
+    public void setPictures(List<NewsPicModel> pictures) {
         this.pictures = pictures;
     }
 

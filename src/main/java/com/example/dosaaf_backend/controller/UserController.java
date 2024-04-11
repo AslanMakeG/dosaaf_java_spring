@@ -1,7 +1,6 @@
 package com.example.dosaaf_backend.controller;
 
-import com.example.dosaaf_backend.entity.UserEntity;
-import com.example.dosaaf_backend.exception.UserAlreadyExsistsException;
+import com.example.dosaaf_backend.exception.user.UserAlreadyExsistsException;
 import com.example.dosaaf_backend.security.Pojo.LoginRequest;
 import com.example.dosaaf_backend.security.Pojo.SingupRequest;
 import com.example.dosaaf_backend.service.UserService;

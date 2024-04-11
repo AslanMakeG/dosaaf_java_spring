@@ -1,7 +1,7 @@
 package com.example.dosaaf_backend.security;
 
 import com.example.dosaaf_backend.entity.UserEntity;
-import com.example.dosaaf_backend.exception.UserEmailNotFoundException;
+import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
 import com.example.dosaaf_backend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

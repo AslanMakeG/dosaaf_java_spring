@@ -2,10 +2,10 @@ package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.RoleEntity;
 import com.example.dosaaf_backend.enums.ERole;
-import com.example.dosaaf_backend.exception.RoleNotFoundException;
-import com.example.dosaaf_backend.exception.UserAlreadyExsistsException;
+import com.example.dosaaf_backend.exception.user.RoleNotFoundException;
+import com.example.dosaaf_backend.exception.user.UserAlreadyExsistsException;
 import com.example.dosaaf_backend.entity.UserEntity;
-import com.example.dosaaf_backend.exception.UserEmailNotFoundException;
+import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
 import com.example.dosaaf_backend.repository.RoleRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
 import com.example.dosaaf_backend.security.JwtUtils;
@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {

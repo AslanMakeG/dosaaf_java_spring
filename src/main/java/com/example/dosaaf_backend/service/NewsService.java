@@ -2,15 +2,14 @@ package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.NewsEntity;
 import com.example.dosaaf_backend.entity.NewsPicEntity;
-import com.example.dosaaf_backend.exception.NewsNotFoundException;
-import com.example.dosaaf_backend.model.News;
-import com.example.dosaaf_backend.model.NewsPic;
+import com.example.dosaaf_backend.exception.news.NewsNotFoundException;
+import com.example.dosaaf_backend.model.NewsModel;
+import com.example.dosaaf_backend.model.NewsPicModel;
 import com.example.dosaaf_backend.repository.NewsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,7 +20,7 @@ public class NewsService {
     @Autowired
     private NewsPicService newsPicService;
 
-    public News create(NewsEntity news){
+    public NewsModel create(NewsEntity news){
         NewsEntity newsCreated = newsRepo.save(news);
 
         //условно создаем по 3 картинки для новости
@@ -31,39 +30,39 @@ public class NewsService {
             picture.setMainPicture(i == 0);
             newsPicService.create(picture, newsCreated.getId());
         }
-        return News.toModel(newsCreated);
+        return NewsModel.toModel(newsCreated);
     }
 
-    public News getOne(Long id) throws NewsNotFoundException {
+    public NewsModel getOne(Long id) throws NewsNotFoundException {
         NewsEntity news = newsRepo.findById(id).orElse(null);
 
         if(news == null){
             throw new NewsNotFoundException("Новость с таким Id не была найдена");
         }
 
-        return News.toModel(news);
+        return NewsModel.toModel(news);
     }
 
 
-    public List<News> getAll() {
-        List<News> newsList = new ArrayList<>();
+    public List<NewsModel> getAll() {
+        List<NewsModel> newsModelList = new ArrayList<>();
         newsRepo.findAll().forEach(news ->{
-            News model = new News();
+            NewsModel model = new NewsModel();
             model.setId(news.getId());
             model.setTitle(news.getTitle());
             model.setContent(news.getContent());
             model.setCreationDateTime(news.getCreationDateTime());
             model.setInArchive(news.isInArchive());
 
-            List<NewsPic> newsPics = new ArrayList<>();
-            newsPics.add(NewsPic.toModel(news.getMainPicture()));
+            List<NewsPicModel> newsPicModels = new ArrayList<>();
+            newsPicModels.add(NewsPicModel.toModel(news.getMainPicture()));
 
-            model.setPictures(newsPics);
+            model.setPictures(newsPicModels);
 
-            newsList.add(model);
+            newsModelList.add(model);
         });
 
-        return newsList;
+        return newsModelList;
     }
 
     public Long deleteNews(Long id){
@@ -71,14 +70,14 @@ public class NewsService {
         return id;
     }
 
-    public News archive(Long id){
+    public NewsModel archive(Long id){
         NewsEntity news = newsRepo.findById(id).get();
         news.setInArchive(!news.isInArchive());
         newsRepo.save(news);
-        return News.toModel(news);
+        return NewsModel.toModel(news);
     }
 
-    public News update(NewsEntity newsEntity){
+    public NewsModel update(NewsEntity newsEntity){
         NewsEntity news = newsRepo.findById(newsEntity.getId()).get();
         //Отправлено null, чтобы не менять фотографии новости
         //Иначе поменять фотографии на другие
@@ -90,6 +89,6 @@ public class NewsService {
         //!!! Тут сделать обновление ссылки на альбом и обновление всех фотографий с нее !!!
         news.setAlbumLink(newsEntity.getAlbumLink());
         newsRepo.save(news);
-        return News.toModel(news);
+        return NewsModel.toModel(news);
     }
 }

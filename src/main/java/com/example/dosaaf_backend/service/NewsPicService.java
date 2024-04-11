@@ -2,7 +2,7 @@ package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.NewsEntity;
 import com.example.dosaaf_backend.entity.NewsPicEntity;
-import com.example.dosaaf_backend.model.NewsPic;
+import com.example.dosaaf_backend.model.NewsPicModel;
 import com.example.dosaaf_backend.repository.NewsPicRepo;
 import com.example.dosaaf_backend.repository.NewsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ public class NewsPicService {
         return newsPicRepo.save(picture);
     }
 
-    public NewsPic makeMainPicture(Long id){
+    public NewsPicModel makeMainPicture(Long id){
         NewsPicEntity picture = newsPicRepo.findById(id).get();
         List<NewsPicEntity> pictures = newsPicRepo.findByNewsId(picture.getNews().getId());
         for(NewsPicEntity i: pictures){
             i.setMainPicture(i.getId() == id); //установка true/false в поле главной картинки
             newsPicRepo.save(i);
         }
-        return NewsPic.toModel(picture);
+        return NewsPicModel.toModel(picture);
     }
 }

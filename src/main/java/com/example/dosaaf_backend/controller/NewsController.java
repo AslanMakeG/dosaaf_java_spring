@@ -1,12 +1,10 @@
 package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.entity.NewsEntity;
-import com.example.dosaaf_backend.exception.NewsNotFoundException;
-import com.example.dosaaf_backend.repository.NewsRepo;
+import com.example.dosaaf_backend.exception.news.NewsNotFoundException;
 import com.example.dosaaf_backend.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

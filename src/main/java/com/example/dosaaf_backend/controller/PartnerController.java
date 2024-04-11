@@ -1,7 +1,7 @@
 package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.entity.PartnerEntity;
-import com.example.dosaaf_backend.exception.PartnerNotFoundException;
+import com.example.dosaaf_backend.exception.partner.PartnerNotFoundException;
 import com.example.dosaaf_backend.service.PartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

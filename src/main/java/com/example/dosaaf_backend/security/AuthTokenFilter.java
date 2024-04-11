@@ -1,6 +1,5 @@
 package com.example.dosaaf_backend.security;
 
-import com.example.dosaaf_backend.exception.UserEmailNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
