@@ -21,6 +21,7 @@ public class NewsModel {
         model.setTitle(entity.getTitle());
         model.setContent(entity.getContent());
         model.setCreationDateTime(entity.getCreationDateTime());
+        model.setInArchive(entity.isInArchive());
 
         List<NewsPicModel> newsPicModels = new ArrayList<>();
         entity.getPictures().forEach(newsPicEntity -> {

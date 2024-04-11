@@ -22,14 +22,16 @@ public class NewsService {
 
     public NewsModel create(NewsEntity news){
         NewsEntity newsCreated = newsRepo.save(news);
-
+        List<NewsPicEntity> newsPics = new ArrayList<>();
         //условно создаем по 3 картинки для новости
         for(int i = 0; i < 3; i++){
             NewsPicEntity picture = new NewsPicEntity();
             picture.setPictureLink("Ссылка на картинку " + (i+1));
             picture.setMainPicture(i == 0);
-            newsPicService.create(picture, newsCreated.getId());
+            newsPics.add(newsPicService.create(picture, newsCreated.getId()));
         }
+        newsCreated.setPictures(newsPics);
+        newsRepo.save(newsCreated);
         return NewsModel.toModel(newsCreated);
     }
 
@@ -47,19 +49,7 @@ public class NewsService {
     public List<NewsModel> getAll() {
         List<NewsModel> newsModelList = new ArrayList<>();
         newsRepo.findAll().forEach(news ->{
-            NewsModel model = new NewsModel();
-            model.setId(news.getId());
-            model.setTitle(news.getTitle());
-            model.setContent(news.getContent());
-            model.setCreationDateTime(news.getCreationDateTime());
-            model.setInArchive(news.isInArchive());
-
-            List<NewsPicModel> newsPicModels = new ArrayList<>();
-            newsPicModels.add(NewsPicModel.toModel(news.getMainPicture()));
-
-            model.setPictures(newsPicModels);
-
-            newsModelList.add(model);
+            newsModelList.add(NewsModel.toModel(news));
         });
 
         return newsModelList;

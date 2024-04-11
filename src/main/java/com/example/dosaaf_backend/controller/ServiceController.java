@@ -29,11 +29,11 @@ public class ServiceController {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity createService(@RequestBody ServiceEntity serviceSectionEntity,
-                                               @RequestParam Long serviceSectionID){
+                                               @RequestParam Long serviceSectionId){
         try{
-            return ResponseEntity.ok(serviceService.create(serviceSectionEntity, serviceSectionID));
+            return ResponseEntity.ok(serviceService.create(serviceSectionEntity, serviceSectionId));
         }
         catch (ServiceAlreadyExistsException | ServiceSectionNotFoundException e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e.getMessage());
@@ -43,7 +43,7 @@ public class ServiceController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteService(@PathVariable Long id){
         try{
             return ResponseEntity.ok(serviceService.delete(id));
@@ -53,7 +53,7 @@ public class ServiceController {
         }
     }
 
-    @PostMapping("/section/create")
+    @PostMapping("/section")
     public ResponseEntity createServiceSection(@RequestBody ServiceSectionEntity serviceSectionEntity){
         try{
             return ResponseEntity.ok(serviceSectionService.create(serviceSectionEntity));
@@ -63,7 +63,7 @@ public class ServiceController {
         }
     }
 
-    @DeleteMapping("/section/delete/{id}")
+    @DeleteMapping("/section/{id}")
     public ResponseEntity deleteServiceSection(@PathVariable Long id){
         try{
             return ResponseEntity.ok(serviceSectionService.delete(id));

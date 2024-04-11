@@ -21,7 +21,7 @@ public class NewsController {
             return ResponseEntity.ok(newsService.create(news));
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Произошла ошибка" + e);
         }
     }
 
