@@ -2,6 +2,8 @@ package com.example.dosaaf_backend.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class ServiceEntity {
     @Id
@@ -13,6 +15,8 @@ public class ServiceEntity {
     private String description;
     @Column
     private float cost;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "service")
+    private List<RequestEntity> requests;
 
     @ManyToOne
     @JoinColumn(name = "serviceSection_id")
