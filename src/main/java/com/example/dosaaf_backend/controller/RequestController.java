@@ -16,6 +16,8 @@ public class RequestController {
     @Autowired
     private RequestService requestService;
 
+    //userId ставить -1, если это неавторизованный пользователь
+    //Если авторизованный то поля userEmail, userName, userSurname и userPatronymic можно не заполнять
     @PostMapping
     public ResponseEntity createRequest(@RequestBody RequestEntity requestEntity, @RequestParam Long userId,
                                         @RequestParam Long serviceId){
@@ -24,6 +26,36 @@ public class RequestController {
         }
         catch (RequestStatusNotFoundException | UserNotFoundException | ServiceNotFoundException e){
             return ResponseEntity.badRequest().body("Произошла ошибка " + e);
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity getAllRequests(){
+        try{
+            return ResponseEntity.ok(requestService.getAll());
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @PutMapping("/reject/{id}")
+    public ResponseEntity rejectRequest(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(requestService.reject(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @PutMapping("/accept/{id}")
+    public ResponseEntity acceptRequest(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(requestService.accept(id));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");

@@ -2,6 +2,7 @@ package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.RequestEntity;
 import com.example.dosaaf_backend.enums.EStatus;
+import com.example.dosaaf_backend.exception.request.RequestNotFoundException;
 import com.example.dosaaf_backend.exception.request.RequestStatusNotFoundException;
 import com.example.dosaaf_backend.exception.service.ServiceNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
@@ -12,6 +13,9 @@ import com.example.dosaaf_backend.repository.ServiceRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RequestService {
@@ -45,5 +49,38 @@ public class RequestService {
 
         requestRepo.save(requestEntity);
         return RequestModel.toModel(requestEntity);
+    }
+
+    public List<RequestModel> getAll(){
+        List<RequestModel> requests = new ArrayList<>();
+        requestRepo.findAll().forEach(request ->{
+            requests.add(RequestModel.toModel(request));
+        });
+
+        return requests;
+    }
+
+    public RequestModel reject(Long id) throws RequestNotFoundException, RequestStatusNotFoundException {
+        RequestEntity request = requestRepo.findById(id).orElseThrow(
+                () -> new RequestNotFoundException("Заявка не найдена")
+        );
+
+        request.setStatus(requestStatusRepo.findByName(EStatus.STATUS_REJECTED).orElseThrow(
+                () -> new RequestStatusNotFoundException("Статус ОТКЛОНЕНО не найден")
+        ));
+
+        return RequestModel.toModel(requestRepo.save(request));
+    }
+
+    public RequestModel accept(Long id) throws RequestNotFoundException, RequestStatusNotFoundException {
+        RequestEntity request = requestRepo.findById(id).orElseThrow(
+                () -> new RequestNotFoundException("Заявка не найдена")
+        );
+
+        request.setStatus(requestStatusRepo.findByName(EStatus.STATUS_ACCEPTED).orElseThrow(
+                () -> new RequestStatusNotFoundException("Статус ПРИНЯТО не найден")
+        ));
+
+        return RequestModel.toModel(requestRepo.save(request));
     }
 }
