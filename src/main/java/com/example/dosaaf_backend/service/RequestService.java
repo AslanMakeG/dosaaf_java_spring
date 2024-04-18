@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RequestService {
@@ -51,13 +53,21 @@ public class RequestService {
         return RequestModel.toModel(requestEntity);
     }
 
-    public List<RequestModel> getAll(){
+    public Map<String, List<RequestModel>> getAll(){
+        Map<String, List<RequestModel>> requestsSorted = new HashMap<String, List<RequestModel>>();
+
         List<RequestModel> requests = new ArrayList<>();
+
         requestRepo.findAll().forEach(request ->{
             requests.add(RequestModel.toModel(request));
         });
 
-        return requests;
+        //фильтрация элементов
+        requestsSorted.put("examine", requests.stream().filter(request -> request.getStatus() == EStatus.STATUS_EXAMINE.name()).toList());
+        requestsSorted.put("accepted", requests.stream().filter(request -> request.getStatus() == EStatus.STATUS_ACCEPTED.name()).toList());
+        requestsSorted.put("rejected", requests.stream().filter(request -> request.getStatus() == EStatus.STATUS_REJECTED.name()).toList());
+
+        return requestsSorted;
     }
 
     public RequestModel reject(Long id) throws RequestNotFoundException, RequestStatusNotFoundException {

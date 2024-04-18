@@ -38,7 +38,7 @@ public class RequestController {
             return ResponseEntity.ok(requestService.getAll());
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Произошла ошибка " + e);
         }
     }
 

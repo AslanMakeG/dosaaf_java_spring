@@ -3,6 +3,7 @@ package com.example.dosaaf_backend.service;
 import com.example.dosaaf_backend.entity.ServiceEntity;
 import com.example.dosaaf_backend.entity.ServiceSectionEntity;
 import com.example.dosaaf_backend.exception.service.ServiceAlreadyExistsException;
+import com.example.dosaaf_backend.exception.service.ServiceNotFoundException;
 import com.example.dosaaf_backend.exception.service.ServiceSectionNotFoundException;
 import com.example.dosaaf_backend.model.ServiceModel;
 import com.example.dosaaf_backend.repository.ServiceRepo;
@@ -35,5 +36,23 @@ public class ServiceService {
     public Long delete(Long id){
         serviceRepo.deleteById(id);
         return id;
+    }
+
+    public ServiceModel update(ServiceEntity serviceEntity, Long sectionId) throws ServiceNotFoundException, ServiceSectionNotFoundException {
+        ServiceEntity service = serviceRepo.findById(serviceEntity.getId()).orElseThrow(
+                () -> new ServiceNotFoundException("Сервиса не существует")
+        );
+
+        service.setServiceSection(serviceSectionRepo.findById(sectionId).orElseThrow(
+                () -> new ServiceSectionNotFoundException("Раздела сервиса не существует")
+        ));
+
+        return ServiceModel.toModel(serviceRepo.save(service));
+    }
+
+    public ServiceModel getOne(Long id) throws ServiceNotFoundException {
+        return ServiceModel.toModel(serviceRepo.findById(id).orElseThrow(
+                () -> new ServiceNotFoundException("Сервиса не существует")
+        ));
     }
 }
