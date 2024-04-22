@@ -4,10 +4,15 @@ import com.example.dosaaf_backend.entity.RequestEntity;
 import com.example.dosaaf_backend.exception.request.RequestStatusNotFoundException;
 import com.example.dosaaf_backend.exception.service.ServiceNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
+import com.example.dosaaf_backend.model.PostRequestModel;
 import com.example.dosaaf_backend.service.RequestService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/request")
@@ -19,16 +24,27 @@ public class RequestController {
     //userId ставить -1, если это неавторизованный пользователь
     //Если авторизованный то поля userEmail, userName, userSurname и userPatronymic можно не заполнять
     @PostMapping
-    public ResponseEntity createRequest(@RequestBody RequestEntity requestEntity, @RequestParam Long userId,
+    public ResponseEntity createRequest(@RequestBody PostRequestModel requestModel, @Nullable Principal principal,
                                         @RequestParam Long serviceId){
         try{
-            return ResponseEntity.ok(requestService.create(requestEntity, userId, serviceId));
+            return ResponseEntity.ok(requestService.create(requestModel, principal == null ? null : principal.getName(), serviceId));
         }
         catch (RequestStatusNotFoundException | UserNotFoundException | ServiceNotFoundException e){
             return ResponseEntity.badRequest().body("Произошла ошибка " + e);
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getAllRequestsFromUser(Principal principal){
+        try{
+            return ResponseEntity.ok(requestService.getAllFromUser(principal.getName()));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка " + e);
         }
     }
 

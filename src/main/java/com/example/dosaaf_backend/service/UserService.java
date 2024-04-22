@@ -44,11 +44,11 @@ public class UserService {
     @Autowired
     private JwtUtils jwtUtils;
 
-    public UserEntity getUserByEmail(String email) throws UserEmailNotFoundException {
-        UserEntity user = userRepo.findByEmail(email).orElseThrow();
-        if(user == null){
-            throw new UserEmailNotFoundException("Пользователь с таким Email не найден");
-        }
+    public UserEntity getUserInfoByEmail(String email) throws UserEmailNotFoundException {
+        UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь с таким Email не найден")
+        );
+
         return user;
     }
 

@@ -78,6 +78,16 @@ public class ServiceController {
         }
     }
 
+    @GetMapping("/section/{id}")
+    public ResponseEntity createServiceSection(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(serviceSectionService.getOne(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
     @PostMapping("/section")
     public ResponseEntity createServiceSection(@RequestBody ServiceSectionEntity serviceSectionEntity){
         try{

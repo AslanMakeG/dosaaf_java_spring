@@ -20,18 +20,9 @@ public class NewsService {
     @Autowired
     private NewsPicService newsPicService;
 
-    public NewsModel create(NewsEntity news){
+    public NewsModel create(NewsEntity news) throws Exception {
         NewsEntity newsCreated = newsRepo.save(news);
-        List<NewsPicEntity> newsPics = new ArrayList<>();
-        //условно создаем по 3 картинки для новости
-        for(int i = 0; i < 3; i++){
-            NewsPicEntity picture = new NewsPicEntity();
-            picture.setPictureLink("Ссылка на картинку " + (i+1));
-            picture.setMainPicture(i == 0);
-            newsPics.add(newsPicService.create(picture, newsCreated.getId()));
-        }
-        newsCreated.setPictures(newsPics);
-        newsRepo.save(newsCreated);
+        newsCreated.setPictures(newsPicService.createFromAlbumLink(news.getAlbumLink(), news.getId()));
         return NewsModel.toModel(newsCreated);
     }
 

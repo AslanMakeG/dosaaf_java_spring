@@ -6,12 +6,14 @@ public class NewsPicModel {
     private Long id;
     private String pictureLink;
     private Long newsId;
+    private boolean mainPicture;
 
     public static NewsPicModel toModel(NewsPicEntity newsPicture){
         NewsPicModel newPic = new NewsPicModel();
         newPic.setId(newsPicture.getId());
         newPic.setPictureLink(newsPicture.getPictureLink());
         newPic.setNewsId(newsPicture.getNews().getId());
+        newPic.setMainPicture(newsPicture.isMainPicture());
         return newPic;
     }
 
@@ -37,5 +39,13 @@ public class NewsPicModel {
 
     public void setNewsId(Long newsId) {
         this.newsId = newsId;
+    }
+
+    public boolean isMainPicture() {
+        return mainPicture;
+    }
+
+    public void setMainPicture(boolean mainPicture) {
+        this.mainPicture = mainPicture;
     }
 }

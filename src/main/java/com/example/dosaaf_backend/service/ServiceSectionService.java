@@ -2,6 +2,8 @@ package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.ServiceSectionEntity;
 import com.example.dosaaf_backend.exception.service.ServiceSectionAlreadyExistsException;
+import com.example.dosaaf_backend.exception.service.ServiceSectionNotFoundException;
+import com.example.dosaaf_backend.model.ServiceModel;
 import com.example.dosaaf_backend.model.ServiceSectionModel;
 import com.example.dosaaf_backend.repository.ServiceSectionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,11 @@ public class ServiceSectionService {
         });
 
         return sectionsAndServices;
+    }
+
+    public ServiceSectionModel getOne(Long id) throws ServiceSectionNotFoundException {
+        return ServiceSectionModel.toModel(serviceSectionRepo.findById(id).orElseThrow(
+                () -> new ServiceSectionNotFoundException("Раздел услуг не найден")
+        ));
     }
 }

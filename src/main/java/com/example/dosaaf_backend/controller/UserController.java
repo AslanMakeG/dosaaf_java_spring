@@ -6,6 +6,7 @@ import com.example.dosaaf_backend.security.Pojo.SingupRequest;
 import com.example.dosaaf_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -40,9 +41,10 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity getUserInfo(Principal principal){
         try{
-            return ResponseEntity.ok(principal);
+            return ResponseEntity.ok(userService.getUserInfoByEmail(principal.getName()));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);

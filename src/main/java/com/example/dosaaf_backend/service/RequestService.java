@@ -1,11 +1,14 @@
 package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.RequestEntity;
+import com.example.dosaaf_backend.entity.UserEntity;
 import com.example.dosaaf_backend.enums.EStatus;
 import com.example.dosaaf_backend.exception.request.RequestNotFoundException;
 import com.example.dosaaf_backend.exception.request.RequestStatusNotFoundException;
 import com.example.dosaaf_backend.exception.service.ServiceNotFoundException;
+import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
+import com.example.dosaaf_backend.model.PostRequestModel;
 import com.example.dosaaf_backend.model.RequestModel;
 import com.example.dosaaf_backend.repository.RequestRepo;
 import com.example.dosaaf_backend.repository.RequestStatusRepo;
@@ -32,18 +35,31 @@ public class RequestService {
     private ServiceRepo serviceRepo;
 
     //Если пользователь авторизован то приходит только ID, если нет, то приходит ФИО и Email без ID
-    public RequestModel create(RequestEntity requestEntity, Long userId, Long serviceId)
+    public RequestModel create(PostRequestModel requestModel, String email, Long serviceId)
             throws RequestStatusNotFoundException, UserNotFoundException, ServiceNotFoundException {
-        if(userId == -1){
-            userId = null;
-        }
+
+        RequestEntity requestEntity = new RequestEntity();
+
+        System.out.println(email);
+
+        //Тут будет отправка сообщения на почту с заявкой и телефоном
+        System.out.println(requestModel.getUserPhoneNumber());
+
         requestEntity.setStatus(requestStatusRepo.findByName(EStatus.STATUS_EXAMINE).orElseThrow(
                 () -> new RequestStatusNotFoundException("Статус 'На рассмотрении' не найден")
         ));
-        if(userId != null){
-           requestEntity.setUser(userRepo.findById(userId).orElseThrow(
-                   () -> new UserNotFoundException("Пользователь не найден")
-           ));
+        if(email != null){
+            UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                    () -> new UserNotFoundException("Пользователь не найден")
+            );
+           requestEntity.setUser(user);
+           requestEntity.setUserEmail(user.getEmail());
+        }
+        else{
+            requestEntity.setUserName(requestModel.getUserName());
+            requestEntity.setUserSurname(requestModel.getUserSurname());
+            requestEntity.setUserPatronymic(requestModel.getUserPatronymic());
+            requestEntity.setUserEmail(requestModel.getUserEmail());
         }
         requestEntity.setService(serviceRepo.findById(serviceId).orElseThrow(
                 () -> new ServiceNotFoundException("Услуга не найдена")
@@ -92,5 +108,17 @@ public class RequestService {
         ));
 
         return RequestModel.toModel(requestRepo.save(request));
+    }
+
+    public List<RequestModel> getAllFromUser(String email) throws UserEmailNotFoundException {
+        List<RequestModel> requestModels = new ArrayList<>();
+        UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь не найден")
+        );
+        requestRepo.findByUserEmail(email).forEach(requestEntity -> {
+            requestModels.add(RequestModel.toModel(requestEntity));
+        });
+
+        return requestModels;
     }
 }

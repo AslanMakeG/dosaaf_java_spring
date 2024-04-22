@@ -7,7 +7,7 @@ public class PostRequestModel {
     private String userName = null;
     private String userSurname = null;
     private String userPatronymic = null;
-    private String userPhoneNumber = null;
+    private String userPhoneNumber;
 
     public String getUserEmail() {
         return userEmail;
