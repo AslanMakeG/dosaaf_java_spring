@@ -8,7 +8,7 @@ import java.util.List;
 public class ServiceSectionModel {
     private Long id;
     private String name;
-    private List<ServiceModel> services;
+    private List<ServiceModel> services = new ArrayList<>();
 
     public static ServiceSectionModel toModel(ServiceSectionEntity serviceSectionEntity){
         ServiceSectionModel model = new ServiceSectionModel();

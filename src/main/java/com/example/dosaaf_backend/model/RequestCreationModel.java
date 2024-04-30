@@ -1,8 +1,6 @@
 package com.example.dosaaf_backend.model;
 
-import jakarta.persistence.Column;
-
-public class PostRequestModel {
+public class RequestCreationModel {
     private String userEmail = null;
     private String userName = null;
     private String userSurname = null;

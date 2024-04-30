@@ -7,13 +7,14 @@ import java.util.Date;
 import java.util.List;
 
 public class NewsModel {
-    private Long id;
+    private Long id = null;
     private String title;
     private String content;
-    private Date creationDateTime;
+    private String albumLink = null;
+    private Date creationDateTime = new Date();
     private boolean inArchive;
 
-    private List<NewsPicModel> pictures;
+    private List<NewsPicModel> pictures = null;
 
     public static NewsModel toModel(NewsEntity entity){
         NewsModel model = new NewsModel();
@@ -81,5 +82,13 @@ public class NewsModel {
 
     public void setInArchive(boolean inArchive) {
         this.inArchive = inArchive;
+    }
+
+    public String getAlbumLink() {
+        return albumLink;
+    }
+
+    public void setAlbumLink(String albumLink) {
+        this.albumLink = albumLink;
     }
 }

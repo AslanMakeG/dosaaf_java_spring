@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity getUserInfo(Principal principal){
         try{
             return ResponseEntity.ok(userService.getUserInfoByEmail(principal.getName()));

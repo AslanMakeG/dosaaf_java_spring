@@ -8,7 +8,7 @@ import com.example.dosaaf_backend.exception.request.RequestStatusNotFoundExcepti
 import com.example.dosaaf_backend.exception.service.ServiceNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
-import com.example.dosaaf_backend.model.PostRequestModel;
+import com.example.dosaaf_backend.model.RequestCreationModel;
 import com.example.dosaaf_backend.model.RequestModel;
 import com.example.dosaaf_backend.repository.RequestRepo;
 import com.example.dosaaf_backend.repository.RequestStatusRepo;
@@ -35,7 +35,7 @@ public class RequestService {
     private ServiceRepo serviceRepo;
 
     //Если пользователь авторизован то приходит только ID, если нет, то приходит ФИО и Email без ID
-    public RequestModel create(PostRequestModel requestModel, String email, Long serviceId)
+    public RequestModel create(RequestCreationModel requestModel, String email, Long serviceId)
             throws RequestStatusNotFoundException, UserNotFoundException, ServiceNotFoundException {
 
         RequestEntity requestEntity = new RequestEntity();

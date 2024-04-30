@@ -1,10 +1,9 @@
 package com.example.dosaaf_backend.controller;
 
-import com.example.dosaaf_backend.entity.RequestEntity;
 import com.example.dosaaf_backend.exception.request.RequestStatusNotFoundException;
 import com.example.dosaaf_backend.exception.service.ServiceNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
-import com.example.dosaaf_backend.model.PostRequestModel;
+import com.example.dosaaf_backend.model.RequestCreationModel;
 import com.example.dosaaf_backend.service.RequestService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class RequestController {
     //userId ставить -1, если это неавторизованный пользователь
     //Если авторизованный то поля userEmail, userName, userSurname и userPatronymic можно не заполнять
     @PostMapping
-    public ResponseEntity createRequest(@RequestBody PostRequestModel requestModel, @Nullable Principal principal,
+    public ResponseEntity createRequest(@RequestBody RequestCreationModel requestModel, @Nullable Principal principal,
                                         @RequestParam Long serviceId){
         try{
             return ResponseEntity.ok(requestService.create(requestModel, principal == null ? null : principal.getName(), serviceId));

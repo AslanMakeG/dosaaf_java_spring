@@ -2,6 +2,7 @@ package com.example.dosaaf_backend.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ public class ServiceSectionEntity {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceSection")
-    private List<ServiceEntity> services = null;
+    private List<ServiceEntity> services = new ArrayList<>();
 
     public ServiceSectionEntity() {
     }

@@ -3,6 +3,7 @@ package com.example.dosaaf_backend.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class NewsEntity {
     private boolean inArchive = false;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
-    private List<NewsPicEntity> pictures;
+    private List<NewsPicEntity> pictures = new ArrayList<>();
 
     public NewsEntity(){
 

@@ -3,9 +3,9 @@ package com.example.dosaaf_backend.model;
 import com.example.dosaaf_backend.entity.NewsPicEntity;
 
 public class NewsPicModel {
-    private Long id;
+    private Long id = null;
     private String pictureLink;
-    private Long newsId;
+    private Long newsId = null;
     private boolean mainPicture;
 
     public static NewsPicModel toModel(NewsPicEntity newsPicture){

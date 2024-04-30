@@ -2,6 +2,7 @@ package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.entity.NewsEntity;
 import com.example.dosaaf_backend.exception.news.NewsNotFoundException;
+import com.example.dosaaf_backend.model.NewsModel;
 import com.example.dosaaf_backend.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class NewsController {
 
     @PostMapping
     //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity createNews(@RequestBody NewsEntity news){
+    public ResponseEntity createNews(@RequestBody NewsModel news){
         try{
             return ResponseEntity.ok(newsService.create(news));
         }
