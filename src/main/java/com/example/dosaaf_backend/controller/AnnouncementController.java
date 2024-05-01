@@ -28,4 +28,15 @@ public class AnnouncementController {
             return ResponseEntity.internalServerError().body("Произошла ошибка");
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity getAllAnnouncements(){
+        try{
+            return ResponseEntity.ok(announcementService.getAll());
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.internalServerError().body("Произошла ошибка");
+        }
+    }
 }

@@ -13,7 +13,7 @@ public class AnnouncementEntity {
     private String content;
 
     @Column
-    private String image;
+    private String image = null;
 
     public Long getId() {
         return id;
@@ -45,5 +45,11 @@ public class AnnouncementEntity {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getImagePath(){
+        if(image == null || id == null) return null;
+
+        return "/announcement/" + id + "/" + image;
     }
 }
