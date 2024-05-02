@@ -39,4 +39,15 @@ public class AnnouncementController {
             return ResponseEntity.internalServerError().body("Произошла ошибка");
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteAnnouncement(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(announcementService.delete(id));
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
+        }
+    }
 }

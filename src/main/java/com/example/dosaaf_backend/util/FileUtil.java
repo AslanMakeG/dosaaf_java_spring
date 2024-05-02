@@ -5,12 +5,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.*;
 
-public class FileUploadUtil {
+public class FileUtil {
 
     public static void saveFile(String uploadDir, String fileName,
                                 MultipartFile multipartFile) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
-        System.out.println(uploadPath.toString());
 
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -22,5 +21,15 @@ public class FileUploadUtil {
         } catch (IOException ioe) {
             throw new IOException("Could not save image file: " + fileName, ioe);
         }
+    }
+
+    public static void deleteFile(String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+        if(Files.isDirectory(path) && path.toFile().listFiles() != null){
+            for(File subFile : path.toFile().listFiles()){
+                Files.delete(subFile.toPath());
+            }
+        }
+        Files.delete(path);
     }
 }
