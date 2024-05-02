@@ -5,6 +5,8 @@ import com.example.dosaaf_backend.entity.ServiceSectionEntity;
 import com.example.dosaaf_backend.exception.service.ServiceAlreadyExistsException;
 import com.example.dosaaf_backend.exception.service.ServiceNotFoundException;
 import com.example.dosaaf_backend.exception.service.ServiceSectionNotFoundException;
+import com.example.dosaaf_backend.model.ServiceModel;
+import com.example.dosaaf_backend.model.ServiceSectionModel;
 import com.example.dosaaf_backend.service.ServiceSectionService;
 import com.example.dosaaf_backend.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +57,9 @@ public class ServiceController {
     }
 
     @PutMapping
-    public ResponseEntity updateService(@RequestBody ServiceEntity serviceSectionEntity,
-                                               @RequestParam Long serviceSectionId){
+    public ResponseEntity updateService(@RequestBody ServiceModel serviceModel){
         try{
-            return ResponseEntity.ok(serviceService.update(serviceSectionEntity, serviceSectionId));
+            return ResponseEntity.ok(serviceService.update(serviceModel));
         }
         catch (ServiceNotFoundException | ServiceSectionNotFoundException e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e.getMessage());
@@ -92,6 +93,16 @@ public class ServiceController {
     public ResponseEntity createServiceSection(@RequestBody ServiceSectionEntity serviceSectionEntity){
         try{
             return ResponseEntity.ok(serviceSectionService.create(serviceSectionEntity));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @PutMapping("/section")
+    public ResponseEntity updateServiceSection(@RequestBody ServiceSectionModel serviceSectionModel){
+        try{
+            return ResponseEntity.ok(serviceSectionService.update(serviceSectionModel));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");

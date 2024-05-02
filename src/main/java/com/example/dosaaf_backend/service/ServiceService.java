@@ -38,14 +38,14 @@ public class ServiceService {
         return id;
     }
 
-    public ServiceModel update(ServiceEntity serviceEntity, Long sectionId) throws ServiceNotFoundException, ServiceSectionNotFoundException {
-        ServiceEntity service = serviceRepo.findById(serviceEntity.getId()).orElseThrow(
+    public ServiceModel update(ServiceModel serviceModel) throws ServiceNotFoundException, ServiceSectionNotFoundException {
+        ServiceEntity service = serviceRepo.findById(serviceModel.getId()).orElseThrow(
                 () -> new ServiceNotFoundException("Сервиса не существует")
         );
 
-        service.setServiceSection(serviceSectionRepo.findById(sectionId).orElseThrow(
-                () -> new ServiceSectionNotFoundException("Раздела сервиса не существует")
-        ));
+        service.setCost(serviceModel.getCost());
+        service.setName(serviceModel.getName());
+        service.setDescription(serviceModel.getDescription());
 
         return ServiceModel.toModel(serviceRepo.save(service));
     }

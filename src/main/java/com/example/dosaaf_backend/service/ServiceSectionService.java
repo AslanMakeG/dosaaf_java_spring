@@ -30,6 +30,16 @@ public class ServiceSectionService {
         return id;
     }
 
+    public ServiceSectionModel update(ServiceSectionModel serviceSectionModel) throws ServiceSectionNotFoundException {
+        ServiceSectionEntity serviceSection = serviceSectionRepo.findById(serviceSectionModel.getId()).orElseThrow(
+                () -> new ServiceSectionNotFoundException("Раздел не найден")
+        );
+
+        serviceSection.setName(serviceSection.getName());
+
+        return ServiceSectionModel.toModel(serviceSectionRepo.save(serviceSection));
+    }
+
     public List<ServiceSectionModel> getSectionsAndServices() {
         List<ServiceSectionModel> sectionsAndServices = new ArrayList<>();
 
