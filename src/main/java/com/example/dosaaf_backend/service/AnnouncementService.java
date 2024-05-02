@@ -1,6 +1,7 @@
 package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.AnnouncementEntity;
+import com.example.dosaaf_backend.exception.announcement.announcementNotFoundException;
 import com.example.dosaaf_backend.model.AnnouncementCreationModel;
 import com.example.dosaaf_backend.repository.AnnouncementRepo;
 import com.example.dosaaf_backend.util.FileUploadUtil;
@@ -39,8 +40,14 @@ public class AnnouncementService {
         return announcementEntity;
     }
 
-    public List<AnnouncementEntity> getAll()  {
+    public List<AnnouncementEntity> getAll(){
         return (List<AnnouncementEntity>) announcementRepo.findAll();
+    }
+
+    public AnnouncementEntity getOne(Long id) throws announcementNotFoundException {
+        return announcementRepo.findById(id).orElseThrow(
+                () -> new announcementNotFoundException("Анонс не найден")
+        );
     }
 
     public Long delete(Long id){

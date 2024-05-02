@@ -51,7 +51,7 @@ public class PartnerController {
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e.getMessage());
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.internalServerError().body("Произошла ошибка");
         }
     }
     @DeleteMapping("/{id}")

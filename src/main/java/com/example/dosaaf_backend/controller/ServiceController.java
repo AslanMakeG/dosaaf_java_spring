@@ -50,7 +50,7 @@ public class ServiceController {
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e.getMessage());
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.internalServerError().body("Произошла ошибка");
         }
     }
 
@@ -64,7 +64,7 @@ public class ServiceController {
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e.getMessage());
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.internalServerError().body("Произошла ошибка");
         }
     }
 

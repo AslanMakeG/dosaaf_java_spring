@@ -36,7 +36,7 @@ public class NewsController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+            return ResponseEntity.internalServerError().body("Произошла ошибка: " + e);
         }
     }
 

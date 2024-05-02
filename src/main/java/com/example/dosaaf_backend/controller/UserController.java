@@ -36,7 +36,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+            return ResponseEntity.internalServerError().body("Произошла ошибка: " + e);
         }
     }
 

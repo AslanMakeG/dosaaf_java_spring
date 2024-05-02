@@ -32,7 +32,7 @@ public class RequestController {
             return ResponseEntity.badRequest().body("Произошла ошибка " + e);
         }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.internalServerError().body("Произошла ошибка");
         }
     }
 
