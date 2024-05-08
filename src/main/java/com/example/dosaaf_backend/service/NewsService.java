@@ -42,9 +42,10 @@ public class NewsService {
             newsEntity.setPictures(newsPicEntities);
         }
         else if(news.getAlbumLink() != null){
-            newsEntity.setPictures(newsPicService.createFromAlbumLink(news.getAlbumLink(), news.getId()));
+            newsEntity.setPictures(newsPicService.createFromAlbumLink(news.getAlbumLink(), newsEntity.getId()));
         }
 
+        newsEntity.setAlbumLink(news.getAlbumLink());
         newsEntity = newsRepo.save(newsEntity);
         return NewsModel.toModel(newsEntity);
     }

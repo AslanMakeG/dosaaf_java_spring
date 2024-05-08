@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "requests")
 public class RequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +29,10 @@ public class RequestEntity {
     @ManyToOne
     @JoinColumn(name = "status_id")
     private RequestStatusEntity status = null;
+
+    @OneToOne
+    @JoinColumn(name = "request_id", referencedColumnName = "id")
+    private RejectionReasonEntity rejectionReason = null;
 
     public Long getId() {
         return id;
@@ -99,5 +104,13 @@ public class RequestEntity {
 
     public void setStatus(RequestStatusEntity status) {
         this.status = status;
+    }
+
+    public RejectionReasonEntity getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(RejectionReasonEntity rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 }

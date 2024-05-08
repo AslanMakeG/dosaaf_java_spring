@@ -1,20 +1,13 @@
-package com.example.dosaaf_backend.entity;
+package com.example.dosaaf_backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import org.springframework.web.multipart.MultipartFile;
 
-@Entity
-@Table(name = "partners")
-public class PartnerEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PartnerCreationModel {
     private Long id;
-    @Column
     private String name;
-
-    @Column
     private String link;
-    @Column
-    private String image;
+    private MultipartFile image;
 
     public Long getId() {
         return id;
@@ -32,18 +25,12 @@ public class PartnerEntity {
         this.name = name;
     }
 
-    public String getImage() {
+    public MultipartFile getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(MultipartFile image) {
         this.image = image;
-    }
-
-    public String getImagePath(){
-        if(image == null || id == null) return null;
-
-        return "/partner/" + id + "/" + image;
     }
 
     public String getLink() {
@@ -52,5 +39,11 @@ public class PartnerEntity {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getImagePath(){
+        if(image == null || id == null) return null;
+
+        return "/partner/" + id + "/" + image;
     }
 }

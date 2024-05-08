@@ -2,6 +2,7 @@ package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.entity.PartnerEntity;
 import com.example.dosaaf_backend.exception.partner.PartnerNotFoundException;
+import com.example.dosaaf_backend.model.PartnerCreationModel;
 import com.example.dosaaf_backend.service.PartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class PartnerController {
     }
 
     @PostMapping
-    public ResponseEntity createPartner(@RequestBody PartnerEntity partnerEntity){
+    public ResponseEntity createPartner(@ModelAttribute PartnerCreationModel partnerCreationModel){
         try{
-            return ResponseEntity.ok(partnerService.create(partnerEntity));
+            return ResponseEntity.ok(partnerService.create(partnerCreationModel));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");

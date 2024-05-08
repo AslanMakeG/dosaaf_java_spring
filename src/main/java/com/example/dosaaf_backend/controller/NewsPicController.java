@@ -13,8 +13,8 @@ public class NewsPicController {
     @Autowired
     private NewsPicService newsPicService;
 
-    @PutMapping("/makemain")
-    public ResponseEntity makeMainPicture(@RequestParam Long id){
+    @PutMapping("/makemain/{id}")
+    public ResponseEntity makeMainPicture(@PathVariable Long id){
         try{
             return ResponseEntity.ok(newsPicService.makeMainPicture(id));
         }
@@ -23,10 +23,10 @@ public class NewsPicController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity createPicture(@RequestBody NewsPicEntity newsPicture, @RequestParam Long newsId){
+    @GetMapping
+    public ResponseEntity getFromAlbumLink(@RequestParam String albumLink){
         try{
-            return ResponseEntity.ok(newsPicService.create(newsPicture, newsId));
+            return ResponseEntity.ok(newsPicService.getFromAlbumLink(albumLink));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);

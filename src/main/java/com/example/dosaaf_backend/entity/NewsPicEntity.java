@@ -3,6 +3,7 @@ package com.example.dosaaf_backend.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name="news_pictures")
 public class NewsPicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

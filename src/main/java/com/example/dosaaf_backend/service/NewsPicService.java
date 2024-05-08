@@ -28,7 +28,8 @@ public class NewsPicService {
     @Value("${dosaaf_backend.vk.service_key}")
     private String vkServiceKey;
 
-    public List<NewsPicEntity> createFromAlbumLink(String albumLink, Long newsId) throws Exception {
+
+    private List<NewsPicModel> getImagesFromAlbum(String albumLink) throws Exception {
         if(!albumLink.contains("vk.com") || !albumLink.contains("album") ){
             throw new Exception("Неверная ссылка на альбом");
         }
@@ -43,6 +44,10 @@ public class NewsPicService {
         connection.setRequestMethod("GET");
 
         int responseCode = connection.getResponseCode();
+
+        if(responseCode != 200){
+            throw new Exception("Ошибка при получении фотографий с альбома");
+        }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String line;
@@ -59,11 +64,7 @@ public class NewsPicService {
 
         List<Map<String, Object>> responseItems = (List<Map<String, Object>>) items.get("items");
 
-        NewsEntity newsEntity = newsRepo.findById(newsId).orElseThrow(
-                () -> new NewsNotFoundException("Новость не найдена")
-        );
-
-        List<NewsPicEntity> picEntities = new ArrayList<>();
+        List<NewsPicModel> pictures = new ArrayList<>();
 
         for(int i = 0; i < responseItems.size(); i++){
             List<Map<String, Object>> sizes = (List<Map<String, Object>>) responseItems.get(i).get("sizes");
@@ -72,21 +73,44 @@ public class NewsPicService {
                             Integer.parseInt(b.get("height").toString()) * Integer.parseInt(b.get("width").toString()) ? a : b);
 
             if(result.isPresent()){
-                String photoUrl = (String) result.get().get("url");
-                NewsPicEntity newsPicEntity = new NewsPicEntity();
-                newsPicEntity.setPictureLink(photoUrl);
-                newsPicEntity.setNews(newsEntity);
-                newsPicEntity.setMainPicture(i == 0);
-                picEntities.add(newsPicEntity);
-                newsPicRepo.save(newsPicEntity);
+                NewsPicModel newsPicModel = new NewsPicModel();
+                newsPicModel.setMainPicture(i == 0);
+                newsPicModel.setPictureLink((String) result.get().get("url"));
+                pictures.add(newsPicModel);
             }
+        }
+        return pictures;
+    }
+
+    public List<NewsPicEntity> createFromAlbumLink(String albumLink, Long newsId) throws Exception {
+        NewsEntity newsEntity = newsRepo.findById(newsId).orElseThrow(
+                () -> new NewsNotFoundException("Новость не найдена")
+        );
+
+        List<NewsPicModel> newsPictures = getImagesFromAlbum(albumLink);
+
+        List<NewsPicEntity> picEntities = new ArrayList<>();
+
+        for(NewsPicModel picture : newsPictures){
+            NewsPicEntity newsPicEntity = new NewsPicEntity();
+
+            newsPicEntity.setNews(newsEntity);
+            newsPicEntity.setMainPicture(picture.isMainPicture());
+            newsPicEntity.setPictureLink(picture.getPictureLink());
+            picEntities.add(newsPicRepo.save(newsPicEntity));
         }
 
         return picEntities;
     }
 
-    public NewsPicEntity create(NewsPicEntity picture, Long newsId){
-        NewsEntity news = newsRepo.findById(newsId).get();
+    public List<NewsPicModel> getFromAlbumLink(String albumLink) throws Exception {
+        return getImagesFromAlbum(albumLink);
+    }
+
+    public NewsPicEntity create(NewsPicEntity picture, Long newsId) throws NewsNotFoundException {
+        NewsEntity news = newsRepo.findById(newsId).orElseThrow(
+                () -> new NewsNotFoundException("Новость не найдена")
+        );
         picture.setNews(news);
         return newsPicRepo.save(picture);
     }

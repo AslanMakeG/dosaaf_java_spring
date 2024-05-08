@@ -12,7 +12,7 @@ public class NewsModel {
     private String content;
     private String albumLink = null;
     private Date creationDateTime = new Date();
-    private boolean inArchive;
+    private boolean inArchive = false;
 
     private List<NewsPicModel> pictures = null;
 
@@ -23,6 +23,7 @@ public class NewsModel {
         model.setContent(entity.getContent());
         model.setCreationDateTime(entity.getCreationDateTime());
         model.setInArchive(entity.isInArchive());
+        model.setAlbumLink(entity.getAlbumLink());
 
         List<NewsPicModel> newsPicModels = new ArrayList<>();
         entity.getPictures().forEach(newsPicEntity -> {
