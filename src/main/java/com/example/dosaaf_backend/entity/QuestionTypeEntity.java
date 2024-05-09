@@ -10,7 +10,8 @@ import java.util.List;
 public class QuestionTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private Long id;
+    @Enumerated(EnumType.STRING)
     private EQuestionType name;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionType")
     private List<QuestionEntity> questions;
@@ -19,11 +20,14 @@ public class QuestionTypeEntity {
         this.name = name;
     }
 
-    public Byte getId() {
+    public QuestionTypeEntity() {
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Byte id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

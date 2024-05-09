@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface QuestionTypeRepo extends CrudRepository<QuestionTypeEntity, Byte> {
+public interface QuestionTypeRepo extends CrudRepository<QuestionTypeEntity, Long> {
     Optional<QuestionTypeEntity> findByName(EQuestionType questionType);
 }
