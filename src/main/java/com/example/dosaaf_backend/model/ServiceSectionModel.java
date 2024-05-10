@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceSectionModel {
-    private Long id;
+    private Long id = null;
     private String name;
     private List<ServiceModel> services = new ArrayList<>();
 

@@ -3,11 +3,11 @@ package com.example.dosaaf_backend.model;
 import com.example.dosaaf_backend.entity.ServiceEntity;
 
 public class ServiceModel {
-    private Long id;
+    private Long id = null;
     private String name;
     private String description;
     private float cost;
-    private Long sectionId;
+    private Long sectionId = null;
 
     public static ServiceModel toModel(ServiceEntity serviceEntity){
         ServiceModel model = new ServiceModel();

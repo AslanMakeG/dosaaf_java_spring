@@ -3,7 +3,7 @@ package com.example.dosaaf_backend.model;
 import org.springframework.web.multipart.MultipartFile;
 
 public class AnnouncementModel {
-    private Long id;
+    private Long id = null;
     private String title;
     private String content;
     private MultipartFile image;
