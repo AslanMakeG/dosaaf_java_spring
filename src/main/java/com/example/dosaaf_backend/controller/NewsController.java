@@ -4,9 +4,12 @@ import com.example.dosaaf_backend.entity.NewsEntity;
 import com.example.dosaaf_backend.exception.news.NewsNotFoundException;
 import com.example.dosaaf_backend.model.NewsModel;
 import com.example.dosaaf_backend.service.NewsService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/news")
@@ -45,6 +48,27 @@ public class NewsController {
     public ResponseEntity getAllNews(){
         try{
             return ResponseEntity.ok(newsService.getAll());
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity getNewsByPage(@RequestParam Integer page, @RequestParam Integer limit,
+                                        @RequestParam @Nullable List<String> query){
+        try{
+            return ResponseEntity.ok(newsService.getByPage(page, limit, query));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity getNewsCount(@RequestParam @Nullable List<String> query){
+        try{
+            return ResponseEntity.ok(newsService.getCount(query));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);

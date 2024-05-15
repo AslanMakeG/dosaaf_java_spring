@@ -37,7 +37,7 @@ public class NewsPicService {
         String ownerId = albumLink.substring(albumLink.indexOf('-'), albumLink.indexOf('_'));
         String albumId = albumLink.substring(albumLink.indexOf('_') + 1);
 
-        URL url = new URL(String.format("https://api.vk.com/method/photos.get?v=5.199&owner_id=%s&album_id=%s&access_token=%s",
+        URL url = new URL(String.format("https://api.vk.com/method/photos.get?v=5.199&owner_id=%s&album_id=%s&access_token=%s&count=1000",
                 ownerId, albumId, vkServiceKey));
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

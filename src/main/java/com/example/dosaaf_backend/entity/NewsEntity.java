@@ -16,7 +16,7 @@ public class NewsEntity {
     private Long id;
     @Column
     private String title;
-    @Column
+    @Column(length = 2000)
     private String content;
     @Column
     private String albumLink = null;

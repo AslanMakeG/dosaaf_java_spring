@@ -9,9 +9,12 @@ import com.example.dosaaf_backend.model.ServiceModel;
 import com.example.dosaaf_backend.model.ServiceSectionModel;
 import com.example.dosaaf_backend.service.ServiceSectionService;
 import com.example.dosaaf_backend.service.ServiceService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/service")
@@ -23,7 +26,7 @@ public class ServiceController {
     private ServiceSectionService serviceSectionService;
 
     @GetMapping("/all")
-    public ResponseEntity getAll(){
+    public ResponseEntity getAll(HttpServletRequest request){
         try{
             return ResponseEntity.ok(serviceSectionService.getSectionsAndServices());
         }
