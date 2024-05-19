@@ -44,15 +44,15 @@ public class PartnerController {
     }
 
     @PutMapping
-    public ResponseEntity updatePartner(@RequestBody PartnerEntity partnerEntity){
+    public ResponseEntity updatePartner(@ModelAttribute PartnerCreationModel partnerCreationModel){
         try{
-            return ResponseEntity.ok(partnerService.update(partnerEntity));
+            return ResponseEntity.ok(partnerService.update(partnerCreationModel));
         }
         catch (PartnerNotFoundException e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e.getMessage());
         }
         catch (Exception e){
-            return ResponseEntity.internalServerError().body("Произошла ошибка");
+            return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
         }
     }
     @DeleteMapping("/{id}")

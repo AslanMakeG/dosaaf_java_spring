@@ -1,6 +1,8 @@
 package com.example.dosaaf_backend.service;
 
+import com.example.dosaaf_backend.entity.AnnouncementEntity;
 import com.example.dosaaf_backend.entity.PartnerEntity;
+import com.example.dosaaf_backend.exception.announcement.AnnouncementNotFoundException;
 import com.example.dosaaf_backend.exception.partner.PartnerNotFoundException;
 import com.example.dosaaf_backend.model.PartnerCreationModel;
 import com.example.dosaaf_backend.repository.PartnerRepo;
@@ -41,11 +43,25 @@ public class PartnerService {
         return id;
     }
 
-    public PartnerEntity update(PartnerEntity partnerEntity) throws PartnerNotFoundException {
-        if(partnerRepo.findById(partnerEntity.getId()).orElse(null) == null){
-            throw new PartnerNotFoundException("Такого партнера не существует");
+    public PartnerEntity update(PartnerCreationModel partnerCreationModel) throws PartnerNotFoundException, IOException {
+        PartnerEntity partnerEntity = partnerRepo.findById(partnerCreationModel.getId()).orElseThrow(
+                () -> new PartnerNotFoundException("Партнер не найден")
+        );
+
+        if(partnerCreationModel.getImage() != null){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(partnerCreationModel.getImage()
+                    .getOriginalFilename()));
+            partnerEntity.setImage(fileName);
+            FileUtil.deleteFile("./partner/" + partnerCreationModel.getId()); //Удалить
+            FileUtil.saveFile("partner/" + partnerEntity.getId(),
+                    partnerEntity.getImage(), partnerCreationModel.getImage());
         }
-        return partnerRepo.save(partnerEntity);
+
+        partnerEntity.setLink(partnerCreationModel.getLink());
+        partnerEntity.setName(partnerCreationModel.getName());
+        partnerEntity = partnerRepo.save(partnerEntity);
+
+        return partnerEntity;
     }
 
     public Optional<PartnerEntity> getOne(Long id) throws PartnerNotFoundException {
@@ -57,6 +73,6 @@ public class PartnerService {
     }
 
     public List<PartnerEntity> getAll(){
-        return (List<PartnerEntity>) partnerRepo.findAll();
+        return (List<PartnerEntity>) partnerRepo.findAllOrderByIdAsc();
     }
 }

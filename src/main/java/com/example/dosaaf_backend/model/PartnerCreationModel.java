@@ -1,5 +1,6 @@
 package com.example.dosaaf_backend.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -7,7 +8,7 @@ public class PartnerCreationModel {
     private Long id;
     private String name;
     private String link;
-    private MultipartFile image;
+    private MultipartFile image = null;
 
     public Long getId() {
         return id;

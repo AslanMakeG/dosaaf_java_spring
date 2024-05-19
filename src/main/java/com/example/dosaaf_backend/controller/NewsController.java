@@ -55,10 +55,10 @@ public class NewsController {
     }
 
     @GetMapping
-    public ResponseEntity getNewsByPage(@RequestParam Integer page, @RequestParam Integer limit,
-                                        @RequestParam @Nullable List<String> query){
+    public ResponseEntity getNewsByFilter(@RequestParam Integer page, @RequestParam Integer limit,
+                                        @RequestParam @Nullable List<String> query, @RequestParam String sort){
         try{
-            return ResponseEntity.ok(newsService.getByPage(page, limit, query));
+            return ResponseEntity.ok(newsService.getByPage(page, limit, query, sort));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
@@ -89,6 +89,16 @@ public class NewsController {
     public ResponseEntity inOrOutArchive(@RequestParam Long id){
         try{
             return ResponseEntity.ok(newsService.archive(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity inOrOutArchive(@RequestBody NewsModel newsModel){
+        try{
+            return ResponseEntity.ok(newsService.update(newsModel));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
