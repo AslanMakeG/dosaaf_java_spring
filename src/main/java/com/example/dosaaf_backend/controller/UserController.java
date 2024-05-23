@@ -1,12 +1,16 @@
 package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.exception.user.UserAlreadyExsistsException;
+import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
+import com.example.dosaaf_backend.exception.user.UserNotFoundException;
 import com.example.dosaaf_backend.security.Pojo.LoginRequest;
 import com.example.dosaaf_backend.security.Pojo.SingupRequest;
 import com.example.dosaaf_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -22,8 +26,14 @@ public class UserController {
         try {
             return ResponseEntity.ok(userService.auth(loginRequest));
         }
+        catch(BadCredentialsException e){
+            return ResponseEntity.badRequest().body("неверный пароль");
+        }
+        catch(UserEmailNotFoundException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+            return ResponseEntity.internalServerError().body("Произошла ошибка: " + e);
         }
     }
 
@@ -33,7 +43,7 @@ public class UserController {
             return ResponseEntity.ok(userService.create(singupRequest));
         }
         catch (UserAlreadyExsistsException e){
-            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().body("Произошла ошибка: " + e);

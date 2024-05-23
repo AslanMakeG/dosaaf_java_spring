@@ -18,8 +18,8 @@ public class UserEntity {
     @Column
     private String surname;
     @Column
-    private String patronymic;
-    @Column
+    private String patronymic = null;
+    @Column(length = 320)
     private String email;
     @Column
     private String password;

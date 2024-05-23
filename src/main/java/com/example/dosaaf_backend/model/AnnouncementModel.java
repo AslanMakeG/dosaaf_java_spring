@@ -6,7 +6,8 @@ public class AnnouncementModel {
     private Long id = null;
     private String title;
     private String content;
-    private MultipartFile image;
+    private MultipartFile image = null;
+    private boolean sameImage = true;
 
     public String getTitle() {
         return title;
@@ -38,5 +39,13 @@ public class AnnouncementModel {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isSameImage() {
+        return sameImage;
+    }
+
+    public void setSameImage(boolean sameImage) {
+        this.sameImage = sameImage;
     }
 }

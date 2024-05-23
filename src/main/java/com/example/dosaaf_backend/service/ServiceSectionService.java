@@ -7,6 +7,7 @@ import com.example.dosaaf_backend.model.ServiceModel;
 import com.example.dosaaf_backend.model.ServiceSectionModel;
 import com.example.dosaaf_backend.repository.ServiceSectionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class ServiceSectionService {
                 () -> new ServiceSectionNotFoundException("Раздел не найден")
         );
 
-        serviceSection.setName(serviceSection.getName());
+        serviceSection.setName(serviceSectionModel.getName());
 
         return ServiceSectionModel.toModel(serviceSectionRepo.save(serviceSection));
     }
@@ -43,7 +44,7 @@ public class ServiceSectionService {
     public List<ServiceSectionModel> getSectionsAndServices() {
         List<ServiceSectionModel> sectionsAndServices = new ArrayList<>();
 
-        serviceSectionRepo.findAll().forEach(serviceSectionEntity -> {
+        serviceSectionRepo.findAll(Sort.by(Sort.Direction.ASC, "id")).forEach(serviceSectionEntity -> {
             sectionsAndServices.add(ServiceSectionModel.toModel(serviceSectionEntity));
         });
 

@@ -51,6 +51,10 @@ public class PartnerService {
         if(partnerCreationModel.getImage() != null){
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(partnerCreationModel.getImage()
                     .getOriginalFilename()));
+            if(fileName.length() > 255){
+                int startIndex = fileName.length() - 255;
+                fileName = fileName.substring(startIndex);
+            }
             partnerEntity.setImage(fileName);
             FileUtil.deleteFile("./partner/" + partnerCreationModel.getId()); //Удалить
             FileUtil.saveFile("partner/" + partnerEntity.getId(),

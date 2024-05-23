@@ -7,6 +7,7 @@ import com.example.dosaaf_backend.repository.AnnouncementRepo;
 import com.example.dosaaf_backend.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -24,26 +25,29 @@ public class AnnouncementService {
     private String serverAddress;
 
     public AnnouncementEntity create(AnnouncementModel announcementModel) throws IOException {
-
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(announcementModel.getImage()
-                .getOriginalFilename()));
-
         AnnouncementEntity announcementEntity = new AnnouncementEntity();
-        announcementEntity.setImage(fileName);
         announcementEntity.setContent(announcementModel.getContent());
         announcementEntity.setTitle(announcementModel.getTitle());
         announcementEntity = announcementRepo.save(announcementEntity);
 
-        if(announcementEntity.getImage() != null){
+        if(announcementModel.getImage() != null){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(announcementModel.getImage()
+                    .getOriginalFilename()));
+            if(fileName.length() > 255){
+                int startIndex = fileName.length() - 255;
+                fileName = fileName.substring(startIndex);
+            }
+            announcementEntity.setImage(fileName);
             FileUtil.saveFile("announcement/" + announcementEntity.getId(),
                     fileName, announcementModel.getImage());
+            announcementEntity = announcementRepo.save(announcementEntity);
         }
 
         return announcementEntity;
     }
 
     public List<AnnouncementEntity> getAll(){
-        return (List<AnnouncementEntity>) announcementRepo.findAll();
+        return announcementRepo.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public AnnouncementEntity getOne(Long id) throws AnnouncementNotFoundException {
@@ -52,29 +56,60 @@ public class AnnouncementService {
         );
     }
 
-    public Long delete(Long id) throws IOException {
-        FileUtil.deleteFile("./announcement/" + id); //Удалить
-        announcementRepo.deleteById(id);
+    public Long delete(Long id) throws IOException, AnnouncementNotFoundException {
+        AnnouncementEntity announcementEntity = announcementRepo.findById(id).orElseThrow(
+                () -> new AnnouncementNotFoundException("Анонс не найден")
+        );
+
+        try {
+            if (announcementEntity.getImage() != null) {
+                FileUtil.deleteFile("./announcement/" + id); //Удалить
+            }
+        }
+        catch (IOException e){
+            announcementRepo.deleteById(id);
+        }
+        finally {
+            announcementRepo.deleteById(id);
+        }
+
         return id;
     }
 
     public AnnouncementEntity update(AnnouncementModel announcementModel) throws AnnouncementNotFoundException, IOException {
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(announcementModel.getImage()
-                .getOriginalFilename()));
-
         AnnouncementEntity announcementEntity = announcementRepo.findById(announcementModel.getId()).orElseThrow(
                 () -> new AnnouncementNotFoundException("Анонс не найден")
         );
-        announcementEntity.setImage(fileName);
         announcementEntity.setContent(announcementModel.getContent());
         announcementEntity.setTitle(announcementModel.getTitle());
-        announcementEntity = announcementRepo.save(announcementEntity);
 
-        if(announcementEntity.getImage() != null){
-            FileUtil.deleteFile("./announcement/" + announcementModel.getId()); //Удалить
+        if(!announcementModel.isSameImage() && announcementModel.getImage() != null){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(announcementModel.getImage()
+                    .getOriginalFilename()));
+            announcementEntity.setImage(fileName);
+            try {
+                FileUtil.deleteFile("./announcement/" + announcementEntity.getId()); //Удалить
+
+            }
+            catch (IOException e){
+                System.out.println(e.getMessage());
+            }
+
             FileUtil.saveFile("announcement/" + announcementEntity.getId(),
                     fileName, announcementModel.getImage());
         }
+        else if(!announcementModel.isSameImage() && announcementModel.getImage() == null){
+            try {
+                FileUtil.deleteFile("./announcement/" + announcementEntity.getId()); //Удалить
+
+            }
+            catch (IOException e){
+                System.out.println(e.getMessage());
+            }
+            announcementEntity.setImage(null);
+        }
+
+        announcementEntity = announcementRepo.save(announcementEntity);
 
         return announcementEntity;
     }

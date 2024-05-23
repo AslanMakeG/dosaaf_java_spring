@@ -20,7 +20,7 @@ public class AnnouncementController {
         }
         catch (Exception e)
         {
-            return ResponseEntity.internalServerError().body("Произошла ошибка");
+            return ResponseEntity.internalServerError().body("Произошла ошибка" + e);
         }
     }
 
@@ -39,6 +39,17 @@ public class AnnouncementController {
     public ResponseEntity deleteAnnouncement(@PathVariable Long id){
         try{
             return ResponseEntity.ok(announcementService.delete(id));
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getOneAnnouncement(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(announcementService.getOne(id));
         }
         catch (Exception e)
         {

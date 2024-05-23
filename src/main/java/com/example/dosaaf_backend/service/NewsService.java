@@ -67,7 +67,7 @@ public class NewsService {
 
     public List<NewsModel> getAll() {
         List<NewsModel> newsModelList = new ArrayList<>();
-        newsRepo.findAll().forEach(news ->{
+        newsRepo.findAll(Sort.by(Sort.Direction.ASC, "id")).forEach(news ->{
             newsModelList.add(NewsModel.toModel(news));
         });
 

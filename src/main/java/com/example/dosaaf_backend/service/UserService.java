@@ -54,7 +54,7 @@ public class UserService {
 
     public UserEntity create(SingupRequest singupRequest) throws UserAlreadyExsistsException, RoleNotFoundException { //изменить пароль на зашифрованный
         if(userRepo.existsByEmail(singupRequest.getEmail())){
-            throw new UserAlreadyExsistsException("Пользователь с таким email уже существует");
+            throw new UserAlreadyExsistsException("пользователь с таким email уже существует");
         }
 
         UserEntity user = new UserEntity();
@@ -97,7 +97,12 @@ public class UserService {
         user.setRoles(roles);
         return userRepo.save(user);
     }
-    public JwtResponse auth(LoginRequest loginRequest) { //изменить пароль на зашифрованный
+    public JwtResponse auth(LoginRequest loginRequest) throws UserEmailNotFoundException { //изменить пароль на зашифрованный
+
+        userRepo.findByEmail(loginRequest.getEmail()).orElseThrow(
+                () -> new UserEmailNotFoundException("пользователь с таким email не зарегистрирован")
+        );
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
