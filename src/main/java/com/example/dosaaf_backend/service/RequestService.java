@@ -40,11 +40,6 @@ public class RequestService {
 
         RequestEntity requestEntity = new RequestEntity();
 
-        System.out.println(email);
-
-        //Тут будет отправка сообщения на почту с заявкой и телефоном
-        System.out.println(requestModel.getUserPhoneNumber());
-
         requestEntity.setStatus(requestStatusRepo.findByName(EStatus.STATUS_EXAMINE).orElseThrow(
                 () -> new RequestStatusNotFoundException("Статус 'На рассмотрении' не найден")
         ));

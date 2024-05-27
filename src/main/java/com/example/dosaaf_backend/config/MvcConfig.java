@@ -18,9 +18,15 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:/" + announcementUploadPath + "/");
 
         Path partnerImagesPathDir = Paths.get("./partner");
-        String partnertUploadPath = partnerImagesPathDir.toFile().getAbsolutePath();
+        String partnerUploadPath = partnerImagesPathDir.toFile().getAbsolutePath();
 
         registry.addResourceHandler("/partner/**")
-                .addResourceLocations("file:/" + partnertUploadPath + "/");
+                .addResourceLocations("file:/" + partnerUploadPath + "/");
+
+        Path educationFilesPathDir = Paths.get("./education");
+        String educationUploadPath = educationFilesPathDir.toFile().getAbsolutePath();
+
+        registry.addResourceHandler("/education/**")
+                .addResourceLocations("file:/" + educationUploadPath + "/");
     }
 }

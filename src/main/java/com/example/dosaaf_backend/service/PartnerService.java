@@ -38,8 +38,9 @@ public class PartnerService {
         return partnerEntity;
     }
 
-    public Long delete(Long id){
+    public Long delete(Long id) throws IOException {
         partnerRepo.deleteById(id);
+        FileUtil.deleteFile("./partner/" + id); //Удалить
         return id;
     }
 

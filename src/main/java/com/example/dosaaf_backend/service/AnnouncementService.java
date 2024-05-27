@@ -86,6 +86,10 @@ public class AnnouncementService {
         if(!announcementModel.isSameImage() && announcementModel.getImage() != null){
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(announcementModel.getImage()
                     .getOriginalFilename()));
+            if(fileName.length() > 255){
+                int startIndex = fileName.length() - 255;
+                fileName = fileName.substring(startIndex);
+            }
             announcementEntity.setImage(fileName);
             try {
                 FileUtil.deleteFile("./announcement/" + announcementEntity.getId()); //Удалить

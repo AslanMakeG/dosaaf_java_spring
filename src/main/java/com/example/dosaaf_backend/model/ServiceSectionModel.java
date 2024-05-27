@@ -1,8 +1,10 @@
 package com.example.dosaaf_backend.model;
 
+import com.example.dosaaf_backend.entity.ServiceEntity;
 import com.example.dosaaf_backend.entity.ServiceSectionEntity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ServiceSectionModel {
@@ -16,8 +18,9 @@ public class ServiceSectionModel {
         model.setName(serviceSectionEntity.getName());
 
         List<ServiceModel> services = new ArrayList<>();
-
-        serviceSectionEntity.getServices().forEach(serviceEntity -> {
+        List<ServiceEntity> serviceEntities = serviceSectionEntity.getServices();
+        serviceEntities.sort(Comparator.comparing(o -> o.getId()));
+        serviceEntities.forEach(serviceEntity -> {
             services.add(ServiceModel.toModel(serviceEntity));
         });
 
