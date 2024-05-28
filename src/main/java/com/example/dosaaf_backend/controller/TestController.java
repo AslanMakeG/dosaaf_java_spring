@@ -6,6 +6,7 @@ import com.example.dosaaf_backend.model.TestModel;
 import com.example.dosaaf_backend.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class TestController {
     private TestService testService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createTest(@RequestBody TestModel testModel){
         try{
             return ResponseEntity.ok(testService.create(testModel));
@@ -28,6 +30,7 @@ public class TestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deleteTest(@PathVariable Long id){
         try{
             return ResponseEntity.ok(testService.delete(id));
@@ -61,6 +64,7 @@ public class TestController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity updateTest(@RequestBody TestModel testModel){
         try{
             return ResponseEntity.ok(testService.update(testModel));

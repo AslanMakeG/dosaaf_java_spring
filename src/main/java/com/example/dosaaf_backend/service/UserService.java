@@ -4,6 +4,7 @@ import com.example.dosaaf_backend.entity.RoleEntity;
 import com.example.dosaaf_backend.enums.ERole;
 import com.example.dosaaf_backend.exception.user.*;
 import com.example.dosaaf_backend.entity.UserEntity;
+import com.example.dosaaf_backend.model.ResetPasswordRequest;
 import com.example.dosaaf_backend.model.UserModel;
 import com.example.dosaaf_backend.repository.RoleRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
@@ -44,8 +45,11 @@ public class UserService {
     @Autowired
     private SmtpMailSender mailSender;
 
-    @Value("${dosaaf_backend.server.address}")
+    @Value("${dosaaf_backend.server.backend_address}")
     private String serverAddress;
+
+    @Value("${dosaaf_backend.server.frontend_address}")
+    private String clientAddress;
 
     public UserModel getUserInfoByEmail(String email) throws UserEmailNotFoundException {
         UserEntity user = userRepo.findByEmail(email).orElseThrow(
@@ -151,5 +155,36 @@ public class UserService {
         userRepo.save(user);
 
         return UserModel.toModel(user);
+    }
+
+    public UserModel forgotPassword(String email) throws UserEmailNotFoundException {
+        UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь не найден")
+        );
+
+        user.setForgotPasswordCode(UUID.randomUUID().toString());
+
+        String message = String.format(
+                "Здравствуйте, %s! \n" +
+                        "Чтобы продолжить восстановление пароля, просим Вас перейти по ссылке: %s/password_recovery?uuid=%s",
+                (user.getSurname() + " " + user.getName() + (user.getPatronymic() == null ? "" : " " + user.getPatronymic())),
+                clientAddress,
+                user.getForgotPasswordCode()
+        );
+
+        mailSender.send(user.getEmail(), "Восстановление пароля", message);
+
+        return UserModel.toModel(userRepo.save(user));
+    }
+
+    public UserModel resetPassword(ResetPasswordRequest resetPasswordRequest) throws UserNotFoundException {
+        UserEntity user = userRepo.findByForgotPasswordCode(resetPasswordRequest.getForgotPasswordCode()).orElseThrow(
+                () -> new UserNotFoundException("Пользователь не найден")
+        );
+
+        user.setForgotPasswordCode(null);
+        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+
+        return UserModel.toModel(userRepo.save(user));
     }
 }

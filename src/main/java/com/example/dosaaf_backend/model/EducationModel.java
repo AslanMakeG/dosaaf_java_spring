@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class EducationModel {
     private Long id;
     private String name;
-    private MultipartFile file;
+    private MultipartFile file = null;
 
     public Long getId() {
         return id;

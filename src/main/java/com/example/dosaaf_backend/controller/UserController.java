@@ -4,6 +4,7 @@ import com.example.dosaaf_backend.exception.user.UserAlreadyExsistsException;
 import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserNotActivatedException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
+import com.example.dosaaf_backend.model.ResetPasswordRequest;
 import com.example.dosaaf_backend.security.Pojo.LoginRequest;
 import com.example.dosaaf_backend.security.Pojo.SingupRequest;
 import com.example.dosaaf_backend.service.UserService;
@@ -55,6 +56,26 @@ public class UserController {
     public ResponseEntity activateEmail(@PathVariable String code){
         try{
             return ResponseEntity.ok(userService.activate(code));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @GetMapping("/password/forgot/{email}")
+    public ResponseEntity forgotPassword(@PathVariable String email){
+        try{
+            return ResponseEntity.ok(userService.forgotPassword(email));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @PostMapping("/password/reset")
+    public ResponseEntity resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+        try{
+            return ResponseEntity.ok(userService.resetPassword(resetPasswordRequest));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);

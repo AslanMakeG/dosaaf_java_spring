@@ -4,6 +4,7 @@ import com.example.dosaaf_backend.model.AnnouncementModel;
 import com.example.dosaaf_backend.service.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ public class AnnouncementController {
     private AnnouncementService announcementService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createAnnouncement(@ModelAttribute AnnouncementModel announcementModel){
         try{
             return ResponseEntity.ok(announcementService.create(announcementModel));
@@ -36,6 +38,7 @@ public class AnnouncementController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deleteAnnouncement(@PathVariable Long id){
         try{
             return ResponseEntity.ok(announcementService.delete(id));
@@ -58,6 +61,7 @@ public class AnnouncementController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity updateAnnouncement(@ModelAttribute AnnouncementModel announcementModel){
         try{
             return ResponseEntity.ok(announcementService.update(announcementModel));

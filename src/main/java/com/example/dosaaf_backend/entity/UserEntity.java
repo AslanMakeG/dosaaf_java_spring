@@ -36,6 +36,9 @@ public class UserEntity {
 
     private String activationCode;
 
+    private String forgotPasswordCode;
+
+
     public UserEntity(String name, String surname, String patronymic, String email, String password, Date registrationDate) {
         this.name = name;
         this.surname = surname;
@@ -125,5 +128,13 @@ public class UserEntity {
 
     public void setActivationCode(String activationCode) {
         this.activationCode = activationCode;
+    }
+
+    public String getForgotPasswordCode() {
+        return forgotPasswordCode;
+    }
+
+    public void setForgotPasswordCode(String forgotPasswordCode) {
+        this.forgotPasswordCode = forgotPasswordCode;
     }
 }

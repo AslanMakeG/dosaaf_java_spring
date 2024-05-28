@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface UserRepo extends CrudRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
     Optional<UserEntity> findByActivationCode(String activationCode);
+    Optional<UserEntity> findByForgotPasswordCode(String forgotPasswordCode);
+
     boolean existsByEmail(String email);
 }

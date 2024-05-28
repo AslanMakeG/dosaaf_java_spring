@@ -6,6 +6,7 @@ import com.example.dosaaf_backend.model.PartnerCreationModel;
 import com.example.dosaaf_backend.service.PartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +35,7 @@ public class PartnerController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createPartner(@ModelAttribute PartnerCreationModel partnerCreationModel){
         try{
             return ResponseEntity.ok(partnerService.create(partnerCreationModel));
@@ -44,6 +46,7 @@ public class PartnerController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity updatePartner(@ModelAttribute PartnerCreationModel partnerCreationModel){
         try{
             return ResponseEntity.ok(partnerService.update(partnerCreationModel));
@@ -56,6 +59,7 @@ public class PartnerController {
         }
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deletePartner(@PathVariable Long id){
         try{
             return ResponseEntity.ok(partnerService.delete(id));

@@ -58,6 +58,7 @@ public class RequestController {
     }
 
     @PutMapping("/reject/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity rejectRequest(@PathVariable Long id){
         try{
             return ResponseEntity.ok(requestService.reject(id));
@@ -68,6 +69,7 @@ public class RequestController {
     }
 
     @PutMapping("/accept/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity acceptRequest(@PathVariable Long id){
         try{
             return ResponseEntity.ok(requestService.accept(id));

@@ -12,6 +12,7 @@ import com.example.dosaaf_backend.service.ServiceService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -46,6 +47,7 @@ public class ServiceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createService(@RequestBody ServiceEntity serviceSectionEntity,
                                                @RequestParam Long serviceSectionId){
         try{
@@ -60,6 +62,7 @@ public class ServiceController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity updateService(@RequestBody ServiceModel serviceModel){
         try{
             return ResponseEntity.ok(serviceService.update(serviceModel));
@@ -73,6 +76,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deleteService(@PathVariable Long id){
         try{
             return ResponseEntity.ok(serviceService.delete(id));
@@ -93,6 +97,7 @@ public class ServiceController {
     }
 
     @PostMapping("/section")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createServiceSection(@RequestBody ServiceSectionEntity serviceSectionEntity){
         try{
             return ResponseEntity.ok(serviceSectionService.create(serviceSectionEntity));
@@ -103,6 +108,7 @@ public class ServiceController {
     }
 
     @PutMapping("/section")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity updateServiceSection(@RequestBody ServiceSectionModel serviceSectionModel){
         try{
             return ResponseEntity.ok(serviceSectionService.update(serviceSectionModel));
@@ -113,6 +119,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/section/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deleteServiceSection(@PathVariable Long id){
         try{
             return ResponseEntity.ok(serviceSectionService.delete(id));

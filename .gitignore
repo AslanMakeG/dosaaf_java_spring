@@ -3,6 +3,7 @@ HELP.md
 build/
 announcement/**
 partner/**
+education/**
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/

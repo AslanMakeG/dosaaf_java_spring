@@ -7,6 +7,7 @@ import com.example.dosaaf_backend.service.NewsService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class NewsController {
     private NewsService newsService;
 
     @PostMapping
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createNews(@RequestBody NewsModel news){
         try{
             return ResponseEntity.ok(newsService.create(news));
@@ -76,6 +77,7 @@ public class NewsController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deleteNews(@PathVariable Long id){
         try{
             return ResponseEntity.ok(newsService.deleteNews(id));
@@ -86,6 +88,7 @@ public class NewsController {
     }
 
     @PutMapping("/archive")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity inOrOutArchive(@RequestParam Long id){
         try{
             return ResponseEntity.ok(newsService.archive(id));
@@ -96,7 +99,8 @@ public class NewsController {
     }
 
     @PutMapping
-    public ResponseEntity inOrOutArchive(@RequestBody NewsModel newsModel){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity updateNews(@RequestBody NewsModel newsModel){
         try{
             return ResponseEntity.ok(newsService.update(newsModel));
         }
