@@ -2,10 +2,9 @@ package com.example.dosaaf_backend.service;
 
 import com.example.dosaaf_backend.entity.RoleEntity;
 import com.example.dosaaf_backend.enums.ERole;
-import com.example.dosaaf_backend.exception.user.RoleNotFoundException;
-import com.example.dosaaf_backend.exception.user.UserAlreadyExsistsException;
+import com.example.dosaaf_backend.exception.user.*;
 import com.example.dosaaf_backend.entity.UserEntity;
-import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
+import com.example.dosaaf_backend.model.UserModel;
 import com.example.dosaaf_backend.repository.RoleRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
 import com.example.dosaaf_backend.security.JwtUtils;
@@ -14,6 +13,7 @@ import com.example.dosaaf_backend.security.Pojo.LoginRequest;
 import com.example.dosaaf_backend.security.Pojo.SingupRequest;
 import com.example.dosaaf_backend.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,10 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -44,12 +41,18 @@ public class UserService {
     @Autowired
     private JwtUtils jwtUtils;
 
-    public UserEntity getUserInfoByEmail(String email) throws UserEmailNotFoundException {
+    @Autowired
+    private SmtpMailSender mailSender;
+
+    @Value("${dosaaf_backend.server.address}")
+    private String serverAddress;
+
+    public UserModel getUserInfoByEmail(String email) throws UserEmailNotFoundException {
         UserEntity user = userRepo.findByEmail(email).orElseThrow(
                 () -> new UserEmailNotFoundException("Пользователь с таким Email не найден")
         );
 
-        return user;
+        return UserModel.toModel(user);
     }
 
     public UserEntity create(SingupRequest singupRequest) throws UserAlreadyExsistsException, RoleNotFoundException { //изменить пароль на зашифрованный
@@ -95,13 +98,29 @@ public class UserService {
         }
 
         user.setRoles(roles);
+        user.setActivationCode(UUID.randomUUID().toString());
+
+        String message = String.format(
+                "Здравствуйте, %s! \n" +
+                        "Для продолжения регистрации просим Вас перейти по ссылке: %s/user/activate/%s",
+                serverAddress,
+                (user.getSurname() + " " + user.getName() + " " + (user.getPatronymic() == null ? "" : user.getPatronymic())),
+                user.getActivationCode()
+        );
+
+        mailSender.send(user.getEmail(), "Подтверждение почты", message);
+
         return userRepo.save(user);
     }
-    public JwtResponse auth(LoginRequest loginRequest) throws UserEmailNotFoundException { //изменить пароль на зашифрованный
+    public JwtResponse auth(LoginRequest loginRequest) throws UserEmailNotFoundException, UserNotActivatedException { //изменить пароль на зашифрованный
 
-        userRepo.findByEmail(loginRequest.getEmail()).orElseThrow(
+        UserEntity user = userRepo.findByEmail(loginRequest.getEmail()).orElseThrow(
                 () -> new UserEmailNotFoundException("пользователь с таким email не зарегистрирован")
         );
+
+        if(user.getActivationCode() != null){
+            throw new UserNotActivatedException("email пользователя не подтвержден");
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -120,5 +139,17 @@ public class UserService {
                 userDetails.getSurname(),
                 userDetails.getPatronymic(),
                 roles);
+    }
+
+    public UserModel activate(String code) throws UserNotFoundException {
+        UserEntity user = userRepo.findByActivationCode(code).orElseThrow(
+                () -> new UserNotFoundException("Пользователь не найден")
+        );
+
+        user.setActivationCode(null);
+
+        userRepo.save(user);
+
+        return UserModel.toModel(user);
     }
 }

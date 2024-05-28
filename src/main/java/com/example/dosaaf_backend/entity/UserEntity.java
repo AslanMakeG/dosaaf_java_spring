@@ -34,6 +34,8 @@ public class UserEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<RequestEntity> requests;
 
+    private String activationCode;
+
     public UserEntity(String name, String surname, String patronymic, String email, String password, Date registrationDate) {
         this.name = name;
         this.surname = surname;
@@ -107,5 +109,21 @@ public class UserEntity {
 
     public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
+    }
+
+    public List<RequestEntity> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<RequestEntity> requests) {
+        this.requests = requests;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 }

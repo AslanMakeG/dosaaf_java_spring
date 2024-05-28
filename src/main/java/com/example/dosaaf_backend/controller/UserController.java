@@ -2,6 +2,7 @@ package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.exception.user.UserAlreadyExsistsException;
 import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
+import com.example.dosaaf_backend.exception.user.UserNotActivatedException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
 import com.example.dosaaf_backend.security.Pojo.LoginRequest;
 import com.example.dosaaf_backend.security.Pojo.SingupRequest;
@@ -29,7 +30,7 @@ public class UserController {
         catch(BadCredentialsException e){
             return ResponseEntity.badRequest().body("неверный пароль");
         }
-        catch(UserEmailNotFoundException e){
+        catch(UserEmailNotFoundException | UserNotActivatedException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         catch (Exception e){
@@ -47,6 +48,16 @@ public class UserController {
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @GetMapping("/activate/{code}")
+    public ResponseEntity activateEmail(@PathVariable String code){
+        try{
+            return ResponseEntity.ok(userService.activate(code));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
         }
     }
 

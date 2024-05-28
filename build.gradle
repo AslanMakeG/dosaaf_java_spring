@@ -26,6 +26,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.17.0'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.3.0'
 }
 
 tasks.named('test') {

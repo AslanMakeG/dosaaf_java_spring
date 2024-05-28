@@ -1,9 +1,7 @@
 package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.exception.education.EducationNotFoundException;
-import com.example.dosaaf_backend.exception.partner.PartnerNotFoundException;
 import com.example.dosaaf_backend.model.EducationModel;
-import com.example.dosaaf_backend.model.PartnerCreationModel;
 import com.example.dosaaf_backend.service.EducationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
