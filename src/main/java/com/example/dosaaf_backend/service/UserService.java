@@ -106,9 +106,9 @@ public class UserService {
 
         String message = String.format(
                 "Здравствуйте, %s! \n" +
-                        "Для продолжения регистрации просим Вас перейти по ссылке: %s/user/activate/%s",
-                serverAddress,
+                        "Для продолжения регистрации просим Вас перейти по ссылке: %s/activate?uuid=%s",
                 (user.getSurname() + " " + user.getName() + " " + (user.getPatronymic() == null ? "" : user.getPatronymic())),
+                clientAddress,
                 user.getActivationCode()
         );
 

@@ -15,6 +15,7 @@ import com.example.dosaaf_backend.repository.RequestStatusRepo;
 import com.example.dosaaf_backend.repository.ServiceRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +35,12 @@ public class RequestService {
     @Autowired
     private ServiceRepo serviceRepo;
 
+    @Autowired
+    private SmtpMailSender mailSender;
+
+    @Value("${dosaaf_backend.email.admin}")
+    private String adminEmail;
+
     //Если пользователь авторизован то приходит только ID, если нет, то приходит ФИО и Email без ID
     public RequestModel create(RequestCreationModel requestModel, String email, Long serviceId)
             throws RequestStatusNotFoundException, UserNotFoundException, ServiceNotFoundException {
@@ -43,6 +50,7 @@ public class RequestService {
         requestEntity.setStatus(requestStatusRepo.findByName(EStatus.STATUS_EXAMINE).orElseThrow(
                 () -> new RequestStatusNotFoundException("Статус 'На рассмотрении' не найден")
         ));
+
         if(email != null){
             UserEntity user = userRepo.findByEmail(email).orElseThrow(
                     () -> new UserNotFoundException("Пользователь не найден")
@@ -56,11 +64,30 @@ public class RequestService {
             requestEntity.setUserPatronymic(requestModel.getUserPatronymic());
             requestEntity.setUserEmail(requestModel.getUserEmail());
         }
+
         requestEntity.setService(serviceRepo.findById(serviceId).orElseThrow(
                 () -> new ServiceNotFoundException("Услуга не найдена")
         ));
 
-        requestRepo.save(requestEntity);
+        requestEntity = requestRepo.save(requestEntity);
+
+        String message = String.format(
+                "Новая заявка от: %s на услугу %s \n" +
+                        "Email: %s \n" +
+                        "Номер телефона: %s",
+                requestEntity.getUser() == null ?
+                (requestEntity.getUserSurname() + " " + requestEntity.getUserName() + " "
+                        + (requestEntity.getUserPatronymic() == null ? "" : requestEntity.getUserPatronymic()))
+                : (requestEntity.getUser().getSurname() + " " + requestEntity.getUser().getName() + " "
+                        + (requestEntity.getUser().getPatronymic() == null ? "" : requestEntity.getUser().getPatronymic())),
+                requestEntity.getService().getName(),
+                requestEntity.getUserEmail(),
+                requestModel.getUserPhoneNumber()
+
+        );
+
+        mailSender.send(adminEmail, "Новая заявка", message);
+
         return RequestModel.toModel(requestEntity);
     }
 
