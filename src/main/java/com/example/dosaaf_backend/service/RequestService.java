@@ -132,6 +132,28 @@ public class RequestService {
         return RequestModel.toModel(requestRepo.save(request));
     }
 
+    public RequestModel notify(Long id) throws RequestNotFoundException, RequestStatusNotFoundException {
+        RequestEntity request = requestRepo.findById(id).orElseThrow(
+                () -> new RequestNotFoundException("Заявка не найдена")
+        );
+
+        String message = String.format(
+                "Статус заявки №%s изменен.\n" +
+                        "Ваша заявка была %s администратором.",
+                request.getId(),
+                request.getStatus().getName() == EStatus.STATUS_ACCEPTED ? "принята" : "отклонена"
+        );
+
+        if(request.getUser() != null){
+            mailSender.send(request.getUser().getEmail(), "Изменен статус заявки", message);
+        }
+        else {
+            mailSender.send(request.getUserEmail(), "Изменен статус заявки", message);
+        }
+
+        return RequestModel.toModel(requestRepo.save(request));
+    }
+
     public List<RequestModel> getAllFromUser(String email) throws UserEmailNotFoundException {
         List<RequestModel> requestModels = new ArrayList<>();
         UserEntity user = userRepo.findByEmail(email).orElseThrow(

@@ -8,7 +8,7 @@ import java.util.List;
 public class TestModel {
     private Long id = null;
     private String name;
-    private String description;
+    private String description = null;
     private List<QuestionModel> questions;
 
     public static TestModel toModel(TestEntity testEntity){

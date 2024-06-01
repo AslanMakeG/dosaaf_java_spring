@@ -38,6 +38,7 @@ public class UserEntity {
 
     private String forgotPasswordCode;
 
+    private Boolean subscribedForNews;
 
     public UserEntity(String name, String surname, String patronymic, String email, String password, Date registrationDate) {
         this.name = name;
@@ -136,5 +137,13 @@ public class UserEntity {
 
     public void setForgotPasswordCode(String forgotPasswordCode) {
         this.forgotPasswordCode = forgotPasswordCode;
+    }
+
+    public boolean isSubscribedForNews() {
+        return subscribedForNews;
+    }
+
+    public void setSubscribedForNews(boolean subscribedForNews) {
+        this.subscribedForNews = subscribedForNews;
     }
 }

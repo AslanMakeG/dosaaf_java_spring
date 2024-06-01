@@ -30,6 +30,18 @@ public class NewsController {
         }
     }
 
+    @GetMapping("/notify/{newsId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity notifyUsers(@PathVariable Long newsId){
+        try{
+            newsService.notify(newsId);
+            return ResponseEntity.ok("Пользователи оповещены");
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка" + e);
+        }
+    }
+
     //Получить одну новость для просмотра
     @GetMapping("/{id}")
     public ResponseEntity getOneNews(@PathVariable Long id){

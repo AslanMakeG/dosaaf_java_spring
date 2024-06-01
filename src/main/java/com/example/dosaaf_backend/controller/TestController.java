@@ -53,7 +53,7 @@ public class TestController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity getAllTests(){
         try{
             return ResponseEntity.ok(testService.getAll());

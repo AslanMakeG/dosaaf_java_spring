@@ -47,6 +47,17 @@ public class RequestController {
         }
     }
 
+    @GetMapping("/notify/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity notifyUser(@PathVariable Long id){
+        try{
+            return ResponseEntity.ok(requestService.notify(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка " + e);
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity getAllRequests(){
         try{

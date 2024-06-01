@@ -8,6 +8,7 @@ import com.example.dosaaf_backend.model.NewsModel;
 import com.example.dosaaf_backend.model.NewsPicModel;
 import com.example.dosaaf_backend.repository.NewsPicRepo;
 import com.example.dosaaf_backend.repository.NewsRepo;
+import com.example.dosaaf_backend.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,11 +21,18 @@ import java.util.*;
 public class NewsService {
     @Autowired
     private NewsRepo newsRepo;
+
+    @Autowired
+    private UserRepo userRepo;
+
     @Autowired
     private NewsPicRepo newsPicRepo;
 
     @Autowired
     private NewsPicService newsPicService;
+
+    @Autowired
+    private SmtpMailSender mailSender;
 
     public NewsModel create(NewsModel news) throws Exception {
         NewsEntity newsEntity = new NewsEntity();
@@ -50,7 +58,12 @@ public class NewsService {
 
         newsEntity.setAlbumLink(news.getAlbumLink());
         newsEntity = newsRepo.save(newsEntity);
+
         return NewsModel.toModel(newsEntity);
+    }
+
+    public void notify(Long newsId){
+        mailSender.sendNewsNotification(userRepo.findBySubscribedForNewsTrue(), newsId);
     }
 
     public NewsModel getOne(Long id) throws NewsNotFoundException {

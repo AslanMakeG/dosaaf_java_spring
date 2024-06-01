@@ -9,6 +9,7 @@ public class SingupRequest {
     private String email;
     private String password;
     private Set<String> roles;
+    private boolean subscribedForNews = true;
 
     public String getName() {
         return name;
@@ -56,5 +57,13 @@ public class SingupRequest {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public boolean isSubscribedForNews() {
+        return subscribedForNews;
+    }
+
+    public void setSubscribedForNews(boolean subscribedForNews) {
+        this.subscribedForNews = subscribedForNews;
     }
 }

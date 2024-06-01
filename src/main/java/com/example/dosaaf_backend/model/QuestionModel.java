@@ -8,7 +8,7 @@ import java.util.List;
 public class QuestionModel {
     private Long id = null;
     private String name;
-    private String description;
+    private String description = null;
     private String questionType;
     private Long testId = null;
     private List<AnswerModel> answers;

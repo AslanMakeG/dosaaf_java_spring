@@ -92,4 +92,26 @@ public class UserController {
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
         }
     }
+
+    @PutMapping("/unsubscribe")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity unsubscribeNews(Principal principal){
+        try{
+            return ResponseEntity.ok(userService.unsubscribe(principal.getName()));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @PutMapping("/subscribe")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity subscribeNews(Principal principal){
+        try{
+            return ResponseEntity.ok(userService.subscribe(principal.getName()));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
 }

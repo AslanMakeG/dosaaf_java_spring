@@ -71,6 +71,7 @@ public class UserService {
         user.setPatronymic(singupRequest.getPatronymic());
         user.setPassword(passwordEncoder.encode(singupRequest.getPassword()));
         user.setRegistrationDate(new Date());
+        user.setSubscribedForNews(singupRequest.isSubscribedForNews());
 
         Set<String> reqRoles = singupRequest.getRoles();
         Set<RoleEntity> roles = new HashSet<>();
@@ -184,6 +185,26 @@ public class UserService {
 
         user.setForgotPasswordCode(null);
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+
+        return UserModel.toModel(userRepo.save(user));
+    }
+
+    public UserModel unsubscribe(String email) throws UserEmailNotFoundException {
+        UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь не найден")
+        );
+
+        user.setSubscribedForNews(false);
+
+        return UserModel.toModel(userRepo.save(user));
+    }
+
+    public UserModel subscribe(String email) throws UserEmailNotFoundException {
+        UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь не найден")
+        );
+
+        user.setSubscribedForNews(true);
 
         return UserModel.toModel(userRepo.save(user));
     }
