@@ -2,19 +2,19 @@ package com.example.dosaaf_backend.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
-@Table(name = "answers")
-public class AnswerEntity {
+@Table(name="user_answers")
+public class UserAnswerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private Boolean rightAnswer;
+    @ManyToOne
+    @JoinColumn(name = "testResult_id")
+    private TestResultEntity testResult;
     @ManyToOne
     @JoinColumn(name = "question_id")
     private QuestionEntity question;
+    private Boolean rightAnswer;
 
     public Long getId() {
         return id;
@@ -24,12 +24,12 @@ public class AnswerEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public TestResultEntity getTestResult() {
+        return testResult;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTestResult(TestResultEntity testResult) {
+        this.testResult = testResult;
     }
 
     public Boolean getRightAnswer() {

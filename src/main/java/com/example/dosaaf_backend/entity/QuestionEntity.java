@@ -20,6 +20,8 @@ public class QuestionEntity {
     private TestEntity test;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private List<AnswerEntity> answers;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    private List<UserAnswerEntity> userAnswers;
 
     public Long getId() {
         return id;
@@ -67,5 +69,13 @@ public class QuestionEntity {
 
     public void setAnswers(List<AnswerEntity> answers) {
         this.answers = answers;
+    }
+
+    public List<UserAnswerEntity> getUserAnswers() {
+        return userAnswers;
+    }
+
+    public void setUserAnswers(List<UserAnswerEntity> userAnswers) {
+        this.userAnswers = userAnswers;
     }
 }

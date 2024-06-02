@@ -114,4 +114,14 @@ public class UserController {
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
         }
     }
+
+    @GetMapping("/test")
+    public ResponseEntity test(Principal principal){
+        try{
+            return ResponseEntity.ok(principal.getName());
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
 }

@@ -34,6 +34,9 @@ public class UserEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<RequestEntity> requests;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<TestResultEntity> testResults;
+
     private String activationCode;
 
     private String forgotPasswordCode;

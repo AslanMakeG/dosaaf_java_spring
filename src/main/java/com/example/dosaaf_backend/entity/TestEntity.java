@@ -15,6 +15,9 @@ public class TestEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "test")
     private List<QuestionEntity> questions;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "test")
+    private List<TestResultEntity> userResults;
+
     public Long getId() {
         return id;
     }

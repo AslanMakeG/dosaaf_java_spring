@@ -1,24 +1,20 @@
 package com.example.dosaaf_backend.service;
 
-import com.example.dosaaf_backend.entity.AnswerEntity;
-import com.example.dosaaf_backend.entity.QuestionEntity;
-import com.example.dosaaf_backend.entity.TestEntity;
+import com.example.dosaaf_backend.entity.*;
 import com.example.dosaaf_backend.enums.EQuestionType;
+import com.example.dosaaf_backend.exception.test.QuestionNotFound;
 import com.example.dosaaf_backend.exception.test.QuestionTypeNotFound;
 import com.example.dosaaf_backend.exception.test.TestNotFound;
-import com.example.dosaaf_backend.model.AnswerModel;
-import com.example.dosaaf_backend.model.QuestionModel;
-import com.example.dosaaf_backend.model.TestModel;
-import com.example.dosaaf_backend.repository.AnswerRepo;
-import com.example.dosaaf_backend.repository.QuestionRepo;
-import com.example.dosaaf_backend.repository.QuestionTypeRepo;
-import com.example.dosaaf_backend.repository.TestRepo;
+import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
+import com.example.dosaaf_backend.model.*;
+import com.example.dosaaf_backend.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TestService {
@@ -30,6 +26,12 @@ public class TestService {
     private AnswerRepo answerRepo;
     @Autowired
     private QuestionTypeRepo questionTypeRepo;
+    @Autowired
+    private TestResultRepo testResultRepo;
+    @Autowired
+    private UserAnswerRepo userAnswerRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     private TestEntity createOrUpdate(TestEntity testEntity, TestModel testModel, boolean isUpdate) throws QuestionTypeNotFound {
         testEntity.setName(testModel.getName());
@@ -105,5 +107,114 @@ public class TestService {
         );
         testEntity = createOrUpdate(testEntity, testModel, true);
         return TestModel.toModel(testRepo.save(testEntity));
+    }
+
+    public PassTestModel pass(PassTestModel passTestModel, String userEmail) throws QuestionNotFound, TestNotFound, UserEmailNotFoundException {
+        TestResultEntity testResult = new TestResultEntity();
+        testResult.setUser(userRepo.findByEmail(userEmail).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь не найден")
+        ));
+
+        List<UserAnswerEntity> userAnswerEntities = new ArrayList<>();
+
+        testResult.setTest(testRepo.findById(passTestModel.getId()).orElseThrow(
+                () -> new TestNotFound("Тест не найден")
+        ));
+
+        testResult = testResultRepo.save(testResult);
+
+        for(PastTestQuestionModel question : passTestModel.getQuestions()){
+            UserAnswerEntity userAnswerEntity = new UserAnswerEntity();
+
+            QuestionEntity questionEntity = questionRepo.findById(question.getId()).orElseThrow(
+                    () -> new QuestionNotFound("Вопрос не найден")
+            );
+
+            userAnswerEntity.setQuestion(questionEntity);
+
+            List<AnswerEntity> answerEntities = questionEntity.getAnswers();
+
+            if(questionEntity.getQuestionType().getName() == EQuestionType.TYPE_SIMPLE){
+                if(question.getAnswersId().size() == 0){
+                    question.setRight(false);
+                }
+                else{
+                    answerEntities = answerEntities.stream().filter(
+                            answerEntity -> answerEntity.getId() == question.getAnswersId().get(0)).toList();
+                    if(answerEntities.size() == 0){
+                        question.setRight(false);
+                    }
+                    else{
+                        question.setRight(answerEntities.get(0).getRightAnswer());
+                    }
+                }
+            }
+
+            if(questionEntity.getQuestionType().getName() == EQuestionType.TYPE_MULTIPLE){
+                answerEntities = answerEntities.stream().filter(
+                        answerEntity -> answerEntity.getRightAnswer()).toList();
+
+                if(answerEntities.size() == 0){
+                    question.setRight(false);
+                }
+                else{
+                    boolean right = true;
+
+                    for(AnswerEntity answer : answerEntities){
+                        if(!question.getAnswersId().contains(answer.getId())){
+                            right = false;
+                            break;
+                        }
+                    }
+                    question.setRight(right);
+                }
+            }
+
+            if(questionEntity.getQuestionType().getName() == EQuestionType.TYPE_TEXT){
+                if(question.getAnswerText() == null){
+                    question.setRight(false);
+                }
+                if(Objects.equals(question.getAnswerText().toLowerCase(), answerEntities.get(0).getName().toLowerCase())){
+                    question.setRight(true);
+                }
+                else{
+                    question.setRight(false);
+                }
+            }
+
+            userAnswerEntity.setRightAnswer(question.getRight());
+            userAnswerEntity.setTestResult(testResult);
+            userAnswerEntities.add(userAnswerRepo.save(userAnswerEntity));
+        }
+
+        testResult.setUserAnswers(userAnswerEntities);
+        testResultRepo.save(testResult);
+        return passTestModel;
+    }
+
+    public Float percent(Long id, String userEmail) {
+        List<TestResultEntity> testResultEntities = testResultRepo.findByTestId(id);
+
+        if(testResultEntities.size() == 0){
+            return 0f;
+        }
+
+        Float percent = 0f;
+
+        for(TestResultEntity testResultEntity : testResultEntities){
+            Integer correct = testResultEntity.getUserAnswers().stream().filter(
+                    userAnswerEntity -> userAnswerEntity.getRightAnswer()
+            ).toList().size();
+
+            if(correct == 0){
+                return 0f;
+            }
+
+            if(correct / (float) testResultEntity.getUserAnswers().size() > percent){
+                percent = correct / (float) testResultEntity.getUserAnswers().size();
+            }
+        }
+
+        return percent;
     }
 }

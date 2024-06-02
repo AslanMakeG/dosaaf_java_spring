@@ -2,12 +2,15 @@ package com.example.dosaaf_backend.controller;
 
 import com.example.dosaaf_backend.exception.test.QuestionTypeNotFound;
 import com.example.dosaaf_backend.exception.test.TestNotFound;
+import com.example.dosaaf_backend.model.PassTestModel;
 import com.example.dosaaf_backend.model.TestModel;
 import com.example.dosaaf_backend.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/test")
@@ -71,6 +74,28 @@ public class TestController {
         }
         catch (QuestionTypeNotFound e){
             return ResponseEntity.badRequest().body("Произошла ошибка " + e);
+        }
+        catch (Exception e){
+            return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
+        }
+    }
+
+    @PostMapping("/pass")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity passTest(@RequestBody PassTestModel passTestModel, Principal principal){
+        try{
+            return ResponseEntity.ok(testService.pass(passTestModel, principal.getName()));
+        }
+        catch (Exception e){
+            return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
+        }
+    }
+
+    @GetMapping("/percent/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity passTest(@PathVariable Long id, Principal principal){
+        try{
+            return ResponseEntity.ok(testService.percent(id, principal.getName()));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
