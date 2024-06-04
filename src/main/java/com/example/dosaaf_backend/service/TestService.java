@@ -135,7 +135,7 @@ public class TestService {
             List<AnswerEntity> answerEntities = questionEntity.getAnswers();
 
             if(questionEntity.getQuestionType().getName() == EQuestionType.TYPE_SIMPLE){
-                if(question.getAnswersId().size() == 0){
+                if(question.getAnswersId() == null || question.getAnswersId().size() == 0){
                     question.setRight(false);
                 }
                 else{
@@ -151,22 +151,26 @@ public class TestService {
             }
 
             if(questionEntity.getQuestionType().getName() == EQuestionType.TYPE_MULTIPLE){
-                answerEntities = answerEntities.stream().filter(
-                        answerEntity -> answerEntity.getRightAnswer()).toList();
-
-                if(answerEntities.size() == 0){
+                if(question.getAnswersId() == null || question.getAnswersId().size() == 0){
                     question.setRight(false);
                 }
-                else{
-                    boolean right = true;
+                else {
+                    answerEntities = answerEntities.stream().filter(
+                            answerEntity -> answerEntity.getRightAnswer()).toList();
 
-                    for(AnswerEntity answer : answerEntities){
-                        if(!question.getAnswersId().contains(answer.getId())){
-                            right = false;
-                            break;
+                    if (answerEntities.size() == 0) {
+                        question.setRight(false);
+                    } else {
+                        boolean right = true;
+
+                        for (AnswerEntity answer : answerEntities) {
+                            if (!question.getAnswersId().contains(answer.getId())) {
+                                right = false;
+                                break;
+                            }
                         }
+                        question.setRight(right);
                     }
-                    question.setRight(right);
                 }
             }
 
@@ -174,11 +178,13 @@ public class TestService {
                 if(question.getAnswerText() == null){
                     question.setRight(false);
                 }
-                if(Objects.equals(question.getAnswerText().toLowerCase(), answerEntities.get(0).getName().toLowerCase())){
-                    question.setRight(true);
-                }
                 else{
-                    question.setRight(false);
+                    if(Objects.equals(question.getAnswerText().toLowerCase(), answerEntities.get(0).getName().toLowerCase())){
+                        question.setRight(true);
+                    }
+                    else{
+                        question.setRight(false);
+                    }
                 }
             }
 
@@ -192,25 +198,25 @@ public class TestService {
         return passTestModel;
     }
 
-    public Float percent(Long id, String userEmail) {
+    public float percent(Long id, String userEmail) {
         List<TestResultEntity> testResultEntities = testResultRepo.findByTestId(id);
 
         if(testResultEntities.size() == 0){
-            return 0f;
+            return 0;
         }
 
-        Float percent = 0f;
+        float percent = 0;
 
         for(TestResultEntity testResultEntity : testResultEntities){
-            Integer correct = testResultEntity.getUserAnswers().stream().filter(
+            int correct = testResultEntity.getUserAnswers().stream().filter(
                     userAnswerEntity -> userAnswerEntity.getRightAnswer()
             ).toList().size();
 
             if(correct == 0){
-                return 0f;
+                continue;
             }
 
-            if(correct / (float) testResultEntity.getUserAnswers().size() > percent){
+            if((correct / (float) testResultEntity.getUserAnswers().size()) > percent){
                 percent = correct / (float) testResultEntity.getUserAnswers().size();
             }
         }
