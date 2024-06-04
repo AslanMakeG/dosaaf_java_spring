@@ -5,6 +5,7 @@ import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
 import com.example.dosaaf_backend.exception.user.UserNotActivatedException;
 import com.example.dosaaf_backend.exception.user.UserNotFoundException;
 import com.example.dosaaf_backend.model.ResetPasswordRequest;
+import com.example.dosaaf_backend.model.UserInfoUpdationModel;
 import com.example.dosaaf_backend.security.Pojo.LoginRequest;
 import com.example.dosaaf_backend.security.Pojo.SingupRequest;
 import com.example.dosaaf_backend.service.UserService;
@@ -109,6 +110,17 @@ public class UserController {
     public ResponseEntity subscribeNews(Principal principal){
         try{
             return ResponseEntity.ok(userService.subscribe(principal.getName()));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @PutMapping("/subscribe")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity updateInfo(@RequestBody UserInfoUpdationModel userInfoUpdationModel, Principal principal){
+        try{
+            return ResponseEntity.ok(userService.updateInfo(userInfoUpdationModel, principal.getName()));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);

@@ -9,6 +9,7 @@ import com.example.dosaaf_backend.model.MailingMemberModel;
 import com.example.dosaaf_backend.repository.MailingGroupRepo;
 import com.example.dosaaf_backend.repository.MailingMemberRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class MailingService {
     public List<MailingGroupModel> getAll(){
         List<MailingGroupModel> mailingGroupModels = new ArrayList<>();
 
-        for(MailingGroupEntity mailingGroupEntity : mailingGroupRepo.findAll()){
+        for(MailingGroupEntity mailingGroupEntity : mailingGroupRepo.findAll(Sort.by(Sort.Direction.ASC, "id"))){
             mailingGroupModels.add(MailingGroupModel.toModel(mailingGroupEntity));
         }
 

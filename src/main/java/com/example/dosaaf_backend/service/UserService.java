@@ -5,6 +5,7 @@ import com.example.dosaaf_backend.enums.ERole;
 import com.example.dosaaf_backend.exception.user.*;
 import com.example.dosaaf_backend.entity.UserEntity;
 import com.example.dosaaf_backend.model.ResetPasswordRequest;
+import com.example.dosaaf_backend.model.UserInfoUpdationModel;
 import com.example.dosaaf_backend.model.UserModel;
 import com.example.dosaaf_backend.repository.RoleRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
@@ -205,6 +206,19 @@ public class UserService {
         );
 
         user.setSubscribedForNews(true);
+
+        return UserModel.toModel(userRepo.save(user));
+    }
+
+    public UserModel updateInfo(UserInfoUpdationModel userInfoUpdationModel, String email) throws UserEmailNotFoundException {
+        UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь не найден")
+        );
+
+        user.setName(userInfoUpdationModel.getName());
+        user.setSurname(userInfoUpdationModel.getSurname());
+        user.setPatronymic(userInfoUpdationModel.getPatronymic());
+        user.setSubscribedForNews(userInfoUpdationModel.getSubscribedForNews());
 
         return UserModel.toModel(userRepo.save(user));
     }

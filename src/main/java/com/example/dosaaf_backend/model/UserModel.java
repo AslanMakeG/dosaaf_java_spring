@@ -17,6 +17,7 @@ public class UserModel {
     private String email;
     private Date registrationDate;
     private Set<RoleEntity> roles;
+    private Boolean subscribedForNews;
 
     public static UserModel toModel(UserEntity user){
         UserModel model = new UserModel();
@@ -84,5 +85,13 @@ public class UserModel {
 
     public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
+    }
+
+    public Boolean getSubscribedForNews() {
+        return subscribedForNews;
+    }
+
+    public void setSubscribedForNews(Boolean subscribedForNews) {
+        this.subscribedForNews = subscribedForNews;
     }
 }
