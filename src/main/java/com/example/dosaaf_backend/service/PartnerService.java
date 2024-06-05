@@ -40,7 +40,12 @@ public class PartnerService {
 
     public Long delete(Long id) throws IOException {
         partnerRepo.deleteById(id);
-        FileUtil.deleteFile("./partner/" + id); //Удалить
+        try {
+            FileUtil.deleteFile("./partner/" + id); //Удалить
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
         return id;
     }
 
@@ -57,7 +62,14 @@ public class PartnerService {
                 fileName = fileName.substring(startIndex);
             }
             partnerEntity.setImage(fileName);
-            FileUtil.deleteFile("./partner/" + partnerCreationModel.getId()); //Удалить
+
+            try {
+                FileUtil.deleteFile("./partner/" + partnerCreationModel.getId()); //Удалить
+            }
+            catch (IOException e){
+                System.out.println(e.getMessage());
+            }
+
             FileUtil.saveFile("partner/" + partnerEntity.getId(),
                     partnerEntity.getImage(), partnerCreationModel.getImage());
         }

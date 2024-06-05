@@ -28,6 +28,7 @@ public class UserModel {
         model.setEmail(user.getEmail());
         model.setRegistrationDate(user.getRegistrationDate());
         model.setRoles(user.getRoles());
+        model.setSubscribedForNews(user.isSubscribedForNews());
         return model;
     }
 

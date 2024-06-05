@@ -1,9 +1,7 @@
 package com.example.dosaaf_backend.controller;
 
-import com.example.dosaaf_backend.exception.user.UserAlreadyExsistsException;
-import com.example.dosaaf_backend.exception.user.UserEmailNotFoundException;
-import com.example.dosaaf_backend.exception.user.UserNotActivatedException;
-import com.example.dosaaf_backend.exception.user.UserNotFoundException;
+import com.example.dosaaf_backend.exception.user.*;
+import com.example.dosaaf_backend.model.ChangePasswordRequest;
 import com.example.dosaaf_backend.model.ResetPasswordRequest;
 import com.example.dosaaf_backend.model.UserInfoUpdationModel;
 import com.example.dosaaf_backend.security.Pojo.LoginRequest;
@@ -68,8 +66,11 @@ public class UserController {
         try{
             return ResponseEntity.ok(userService.forgotPassword(email));
         }
+        catch (UserEmailNotFoundException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
         catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+            return ResponseEntity.internalServerError().body("Произошла ошибка: " + e);
         }
     }
 
@@ -80,6 +81,20 @@ public class UserController {
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);
+        }
+    }
+
+    @PutMapping("/password/change")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, Principal principal){
+        try{
+            return ResponseEntity.ok(userService.changePassword(changePasswordRequest, principal.getName()));
+        }
+        catch (OldPasswordDontMatchException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch (Exception e){
+            return ResponseEntity.internalServerError().body("Произошла ошибка: " + e);
         }
     }
 
@@ -116,7 +131,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/subscribe")
+    @PutMapping("/updateInfo")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity updateInfo(@RequestBody UserInfoUpdationModel userInfoUpdationModel, Principal principal){
         try{

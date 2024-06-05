@@ -1,11 +1,15 @@
 package com.example.dosaaf_backend.service;
 
+import com.example.dosaaf_backend.entity.MailingGroupEntity;
 import com.example.dosaaf_backend.entity.NewsEntity;
 import com.example.dosaaf_backend.entity.NewsPicEntity;
+import com.example.dosaaf_backend.exception.mailing.MailingGroupNotFoundException;
 import com.example.dosaaf_backend.exception.news.NewsNotFoundException;
 import com.example.dosaaf_backend.exception.news.NewsPictureNotFound;
+import com.example.dosaaf_backend.model.MailingGroupModel;
 import com.example.dosaaf_backend.model.NewsModel;
 import com.example.dosaaf_backend.model.NewsPicModel;
+import com.example.dosaaf_backend.repository.MailingGroupRepo;
 import com.example.dosaaf_backend.repository.NewsPicRepo;
 import com.example.dosaaf_backend.repository.NewsRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
@@ -33,6 +37,9 @@ public class NewsService {
 
     @Autowired
     private SmtpMailSender mailSender;
+
+    @Autowired
+    private MailingGroupRepo mailingGroupRepo;
 
     public NewsModel create(NewsModel news) throws Exception {
         NewsEntity newsEntity = new NewsEntity();
@@ -62,8 +69,18 @@ public class NewsService {
         return NewsModel.toModel(newsEntity);
     }
 
-    public void notify(Long newsId){
-        mailSender.sendNewsNotification(userRepo.findBySubscribedForNewsTrue(), newsId);
+    public void notify(List<Long> groupsId, Long newsId){
+        List<MailingGroupEntity> mailingGroupEntities = new ArrayList<>();
+        groupsId.forEach(id -> {
+            try {
+                mailingGroupEntities.add(mailingGroupRepo.findById(id).orElseThrow(
+                        () -> new MailingGroupNotFoundException("Группа рассылки не найдена")
+                ));
+            } catch (MailingGroupNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+        });
+        mailSender.sendNewsNotification(userRepo.findBySubscribedForNewsTrue(), mailingGroupEntities, newsId);
     }
 
     public NewsModel getOne(Long id) throws NewsNotFoundException {

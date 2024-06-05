@@ -30,11 +30,11 @@ public class NewsController {
         }
     }
 
-    @GetMapping("/notify/{newsId}")
+    @PostMapping("/notify/{newsId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity notifyUsers(@PathVariable Long newsId){
+    public ResponseEntity notifyUsers(@RequestBody List<Long> groups, @PathVariable Long newsId){
         try{
-            newsService.notify(newsId);
+            newsService.notify(groups, newsId);
             return ResponseEntity.ok("Пользователи оповещены");
         }
         catch (Exception e){

@@ -4,6 +4,7 @@ import com.example.dosaaf_backend.entity.RoleEntity;
 import com.example.dosaaf_backend.enums.ERole;
 import com.example.dosaaf_backend.exception.user.*;
 import com.example.dosaaf_backend.entity.UserEntity;
+import com.example.dosaaf_backend.model.ChangePasswordRequest;
 import com.example.dosaaf_backend.model.ResetPasswordRequest;
 import com.example.dosaaf_backend.model.UserInfoUpdationModel;
 import com.example.dosaaf_backend.model.UserModel;
@@ -161,7 +162,7 @@ public class UserService {
 
     public UserModel forgotPassword(String email) throws UserEmailNotFoundException {
         UserEntity user = userRepo.findByEmail(email).orElseThrow(
-                () -> new UserEmailNotFoundException("Пользователь не найден")
+                () -> new UserEmailNotFoundException("Пользователь с таким email не зарегистрирован")
         );
 
         user.setForgotPasswordCode(UUID.randomUUID().toString());
@@ -219,6 +220,20 @@ public class UserService {
         user.setSurname(userInfoUpdationModel.getSurname());
         user.setPatronymic(userInfoUpdationModel.getPatronymic());
         user.setSubscribedForNews(userInfoUpdationModel.getSubscribedForNews());
+
+        return UserModel.toModel(userRepo.save(user));
+    }
+
+    public UserModel changePassword(ChangePasswordRequest changePasswordRequest, String email) throws UserEmailNotFoundException, OldPasswordDontMatchException {
+        UserEntity user = userRepo.findByEmail(email).orElseThrow(
+                () -> new UserEmailNotFoundException("Пользователь не найден")
+        );
+
+        if(!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())){
+            throw new OldPasswordDontMatchException("неверный старый пароль");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
 
         return UserModel.toModel(userRepo.save(user));
     }

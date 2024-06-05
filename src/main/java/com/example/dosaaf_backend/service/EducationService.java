@@ -39,7 +39,12 @@ public class EducationService {
 
     public Long delete(Long id) throws IOException {
         educationRepo.deleteById(id);
-        FileUtil.deleteFile("./education/" + id);
+        try {
+            FileUtil.deleteFile("./education/" + id);
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
         return id;
     }
 
@@ -68,7 +73,12 @@ public class EducationService {
                 fileName = fileName.substring(startIndex);
             }
             educationEntity.setFile(fileName);
-            FileUtil.deleteFile("./education/" + educationModel.getId()); //Удалить
+            try {
+                FileUtil.deleteFile("./education/" + educationModel.getId()); //Удалить
+            }
+            catch (IOException e){
+                System.out.println(e.getMessage());
+            }
             FileUtil.saveFile("education/" + educationEntity.getId(),
                     educationEntity.getFile(), educationModel.getFile());
         }

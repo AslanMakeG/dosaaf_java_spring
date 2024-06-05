@@ -1,5 +1,7 @@
 package com.example.dosaaf_backend.service;
 
+import com.example.dosaaf_backend.entity.MailingGroupEntity;
+import com.example.dosaaf_backend.entity.MailingMemberEntity;
 import com.example.dosaaf_backend.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +30,7 @@ public class SmtpMailSender {
         mailSender.send(mailMessage);
     }
 
-    public void sendNewsNotification(List<UserEntity> users, Long newsId){
+    public void sendNewsNotification(List<UserEntity> users, List<MailingGroupEntity> groups, Long newsId){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
         mailMessage.setFrom(username);
@@ -42,6 +44,13 @@ public class SmtpMailSender {
         for(UserEntity user : users){
             mailMessage.setTo(user.getEmail());
             mailSender.send(mailMessage);
+        }
+
+        for(MailingGroupEntity group : groups){
+            for(MailingMemberEntity member : group.getMembers()){
+                mailMessage.setTo(member.getEmail());
+                mailSender.send(mailMessage);
+            }
         }
     }
 }
