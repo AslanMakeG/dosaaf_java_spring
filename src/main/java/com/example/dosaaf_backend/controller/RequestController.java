@@ -47,6 +47,17 @@ public class RequestController {
         }
     }
 
+    @GetMapping("/user/last")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getLastRequestForUser(Principal principal){
+        try{
+            return ResponseEntity.ok(requestService.getLast(principal.getName()));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка " + e);
+        }
+    }
+
     @GetMapping("/notify/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity notifyUser(@PathVariable Long id){
@@ -59,6 +70,7 @@ public class RequestController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity getAllRequests(){
         try{
             return ResponseEntity.ok(requestService.getAll());
@@ -68,7 +80,7 @@ public class RequestController {
         }
     }
 
-    @PutMapping("/reject/{id}")
+    @GetMapping("/reject/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity rejectRequest(@PathVariable Long id){
         try{
@@ -79,11 +91,22 @@ public class RequestController {
         }
     }
 
-    @PutMapping("/accept/{id}")
+    @GetMapping("/accept/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity acceptRequest(@PathVariable Long id){
         try{
             return ResponseEntity.ok(requestService.accept(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+    @GetMapping("/getRequestsCount/{date}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity getCount(@PathVariable String date){
+        try{
+            return ResponseEntity.ok(requestService.getRequestsCountByDate(date));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");

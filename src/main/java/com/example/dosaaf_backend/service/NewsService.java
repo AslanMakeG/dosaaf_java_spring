@@ -116,23 +116,28 @@ public class NewsService {
                     Sort.Direction.ASC : Sort.Direction.DESC,
                     "creationDateTime"));
 
-            for(String queryWord : query) {
-                newsEntities = newsEntities.stream().filter(newsEntity -> newsEntity.getTitle()
-                        .toLowerCase()
-                        .contains(queryWord.toLowerCase()) || newsEntity.getContent()
-                                .toLowerCase()
-                                .contains(queryWord.toLowerCase()))
-                        .toList();
-
-                Integer indexFrom = (page * limit) - limit;
-                Integer indexTo = page * limit;
-
-                if(indexTo >= newsEntities.size()){
-                    indexTo = newsEntities.size();
+            newsEntities = newsEntities.stream().filter(newsEntity -> {
+                for(String queryWord : query){
+                    if(newsEntity.getTitle()
+                            .toLowerCase()
+                            .contains(queryWord.toLowerCase())
+                            || newsEntity.getContent()
+                            .toLowerCase()
+                            .contains(queryWord.toLowerCase())){
+                        return true;
+                    }
                 }
+                return false;
+            }).toList();
 
-                newsEntities = newsEntities.subList(indexFrom, indexTo);
+            int indexFrom = (page * limit) - limit;
+            int indexTo = page * limit;
+
+            if(indexTo >= newsEntities.size()){
+                indexTo = newsEntities.size();
             }
+
+            newsEntities = newsEntities.subList(indexFrom, indexTo);
         }
         else{
             newsEntities = dateSort.toLowerCase().equals("asc") ?

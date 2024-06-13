@@ -25,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -236,5 +238,14 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
 
         return UserModel.toModel(userRepo.save(user));
+    }
+
+    public Long getUsersCountByDate(String date) throws Exception {
+        Pattern pattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+        Matcher matcher = pattern.matcher(date);
+        if(!matcher.find()){
+            throw new Exception("Неправильный формат даты");
+        }
+        return userRepo.countByRegisterDate(date);
     }
 }

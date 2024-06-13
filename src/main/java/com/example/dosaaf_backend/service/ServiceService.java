@@ -40,7 +40,7 @@ public class ServiceService {
 
     public ServiceModel update(ServiceModel serviceModel) throws ServiceNotFoundException, ServiceSectionNotFoundException {
         ServiceEntity service = serviceRepo.findById(serviceModel.getId()).orElseThrow(
-                () -> new ServiceNotFoundException("Сервиса не существует")
+                () -> new ServiceNotFoundException("Услуги не существует")
         );
 
         service.setCost(serviceModel.getCost());
@@ -52,7 +52,7 @@ public class ServiceService {
 
     public ServiceModel getOne(Long id) throws ServiceNotFoundException {
         return ServiceModel.toModel(serviceRepo.findById(id).orElseThrow(
-                () -> new ServiceNotFoundException("Сервиса не существует")
+                () -> new ServiceNotFoundException("Услуги не существует")
         ));
     }
 }

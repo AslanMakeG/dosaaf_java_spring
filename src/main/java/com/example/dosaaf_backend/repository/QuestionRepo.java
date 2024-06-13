@@ -12,4 +12,5 @@ public interface QuestionRepo extends CrudRepository<QuestionEntity, Long> {
     @Modifying
     @Transactional
     void deleteByTestId(Long testId);
+    void deleteById(Long id);
 }

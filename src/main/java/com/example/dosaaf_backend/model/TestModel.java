@@ -9,6 +9,7 @@ public class TestModel {
     private Long id = null;
     private String name;
     private String description = null;
+    private float percent = 0;
     private List<QuestionModel> questions;
 
     public static TestModel toModel(TestEntity testEntity){
@@ -55,5 +56,13 @@ public class TestModel {
 
     public void setQuestions(List<QuestionModel> questions) {
         this.questions = questions;
+    }
+
+    public float getPercent() {
+        return percent;
+    }
+
+    public void setPercent(float percent) {
+        this.percent = percent;
     }
 }

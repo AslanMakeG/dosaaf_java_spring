@@ -99,9 +99,9 @@ public class NewsController {
         }
     }
 
-    @PutMapping("/archive")
+    @GetMapping("/archive/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity inOrOutArchive(@RequestParam Long id){
+    public ResponseEntity inOrOutArchive(@PathVariable Long id){
         try{
             return ResponseEntity.ok(newsService.archive(id));
         }

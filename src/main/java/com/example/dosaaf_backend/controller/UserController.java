@@ -142,10 +142,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/test")
-    public ResponseEntity test(Principal principal){
+    @GetMapping("/getUsersCount/{date}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity getUsersCountByDate(@PathVariable String date){
         try{
-            return ResponseEntity.ok(principal.getName());
+            return ResponseEntity.ok(userService.getUsersCountByDate(date));
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка: " + e);

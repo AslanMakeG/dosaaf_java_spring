@@ -16,12 +16,15 @@ import com.example.dosaaf_backend.repository.ServiceRepo;
 import com.example.dosaaf_backend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class RequestService {
@@ -159,10 +162,25 @@ public class RequestService {
         UserEntity user = userRepo.findByEmail(email).orElseThrow(
                 () -> new UserEmailNotFoundException("Пользователь не найден")
         );
-        requestRepo.findByUserEmail(email).forEach(requestEntity -> {
+        requestRepo.findByUserEmail(email, Sort.by(Sort.Direction.ASC, "date")).forEach(requestEntity -> {
             requestModels.add(RequestModel.toModel(requestEntity));
         });
 
         return requestModels;
+    }
+
+    public RequestModel getLast(String email){
+        return RequestModel.toModel(requestRepo.findFirstByUserEmail(email, Sort.by(Sort.Direction.DESC, "date")).orElse(
+                null
+        ));
+    }
+
+    public Long getRequestsCountByDate(String date) throws Exception {
+        Pattern pattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+        Matcher matcher = pattern.matcher(date);
+        if(!matcher.find()){
+            throw new Exception("Неправильный формат даты");
+        }
+        return requestRepo.countByDate(date);
     }
 }

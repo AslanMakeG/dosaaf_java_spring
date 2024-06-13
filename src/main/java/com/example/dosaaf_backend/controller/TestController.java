@@ -57,9 +57,10 @@ public class TestController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity getAllTests(){
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity getAllTests(Principal principal){
         try{
-            return ResponseEntity.ok(testService.getAll());
+            return ResponseEntity.ok(testService.getAll(principal.getName()));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
@@ -91,11 +92,11 @@ public class TestController {
         }
     }
 
-    @GetMapping("/percent/{id}")
+    @GetMapping("/last")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity passTest(@PathVariable Long id, Principal principal){
+    public ResponseEntity lastUserResults(Principal principal){
         try{
-            return ResponseEntity.ok(testService.percent(id, principal.getName()));
+            return ResponseEntity.ok(testService.getLastResults(principal.getName()));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().body("Произошла ошибка " + e);
